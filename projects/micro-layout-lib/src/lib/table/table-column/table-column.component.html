@@ -5,15 +5,15 @@
 >
     <span (click)="onElementClick()">{{data}}</span>
 </div>
-<div #columnComponent class="COMPONENT"></div>
+<div #columnComponent class="component"></div>
 <div
         id="{{ data.id }}"
         [ngSwitch]="columnType"
         *ngIf="data !== null && isEditing && isEditable"
-        class="Table__Column Form__Item"
+        class="column table-form-element"
 >
     <textarea *ngSwitchCase="tableColumnTypes.TEXTAREA" [(ngModel)]="data"></textarea>
     <ml-switch *ngSwitchCase="tableColumnTypes.SWITCH" [(ngModel)]="data"></ml-switch>
     <input *ngSwitchDefault type="text" [(ngModel)]="data"/>
 </div>
-<div class="Table__Column Table__Column--empty" *ngIf="data === null && !isEditing">/</div>
+<div ngClass="column column-empty" *ngIf="data === null && !isEditing">/</div>

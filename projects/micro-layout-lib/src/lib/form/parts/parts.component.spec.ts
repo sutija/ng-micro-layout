@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PartsComponent } from './parts.component';
+import { ButtonsModule } from 'micro-layout-lib/lib/buttons/buttons.module';
 
 describe('PartsComponent', () => {
   let component: PartsComponent;
@@ -8,7 +9,8 @@ describe('PartsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PartsComponent ]
+      declarations: [ PartsComponent ],
+      imports: [ButtonsModule]
     })
     .compileComponents();
   }));

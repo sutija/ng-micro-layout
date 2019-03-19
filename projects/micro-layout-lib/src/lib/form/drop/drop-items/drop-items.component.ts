@@ -5,7 +5,7 @@ import { DropComponent } from '../drop.component';
 
 @Component({
   selector: 'ml-drop-items, [ml-drop-items]',
-  templateUrl: './drop-items.component.html'
+  templateUrl: './drop-items.component.html',
 })
 export class DropItemsComponent implements OnInit {
   @Input() parentId;

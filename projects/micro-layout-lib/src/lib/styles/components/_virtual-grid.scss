@@ -1,0 +1,97 @@
+/*
+Virtual grid for testing
+*/
+.virtual-grid {
+  bottom: 0;
+  // display: none;
+  justify-content: center;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+
+  &.-visible {
+    display: flex;
+  }
+
+  .grid-container {
+    @include breakpoint($mobileOnly) {
+      @include container($bpMobile);
+    }
+
+    @include breakpoint($phabletOnly) {
+      @include container($bpPhablet);
+    }
+
+    @include breakpoint($tabletOnly) {
+      @include container($bpTablet);
+    }
+
+    @include breakpoint($desktopOnly) {
+      @include container($bpDesktop);
+    }
+
+    @include breakpoint($largeDesktop) {
+      @include container($bpLargeDesktop);
+    }
+
+    @include breakpoint($xLargeDesktop) {
+      @include container($bpXLargeDesktop);
+    }
+
+    height: 100%;
+  }
+
+  .grid {
+    @include grid-container();
+
+    height: 100%;
+
+    span {
+      &:after {
+        background-color: rgba(0, 0, 0, .1);
+        content: '';
+        display: block;
+        height: 100%;
+      }
+
+      @include breakpoint($mobileOnly) {
+        @include column(1, 4, $bpMobile);
+        &:nth-of-type(n + 5) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($phabletOnly) {
+        @include column(1, 6, $bpPhablet);
+        &:nth-of-type(n + 7) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($tabletOnly) {
+        @include column(1, 8, $bpTablet);
+        &:nth-of-type(n + 7) {
+          display: block;
+        }
+        &:nth-of-type(n + 9) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($desktopOnly) {
+        @include column(1, 12, $bpDesktop);
+        &:nth-of-type(n + 13) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($largeDesktop) {
+        @include column(1, 24, $bpLargeDesktop);
+        display: block;
+      }
+    }
+  }
+}

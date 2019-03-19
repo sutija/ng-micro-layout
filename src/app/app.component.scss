@@ -1,0 +1,69 @@
+@import "~node_modules/simple-scss-grid-layout/scss/vars";
+@import "~node_modules/simple-scss-grid-layout/scss/layout";
+@import "~node_modules/simple-scss-grid-layout/scss/grid";
+
+
+.container {
+  @include breakpoint($mobileOnly) {
+    @include container($bpMobile);
+  }
+
+  @include breakpoint($phabletOnly) {
+    @include container($bpPhablet);
+  }
+
+  @include breakpoint($tabletOnly) {
+    @include container($bpTablet);
+  }
+
+  @include breakpoint($desktopOnly) {
+    @include container($bpDesktop);
+  }
+
+  @include breakpoint($largeDesktop) {
+    @include container($bpLargeDesktop);
+  }
+
+  @include breakpoint($xLargeDesktop) {
+    @include container($bpXLargeDesktop);
+  }
+}
+
+.grid {
+  @include grid-container();
+}
+
+.sample-column {
+  @include breakpoint($mobileOnly) {
+    @include column(4, $mobileTotalColumns, $bpMobile);
+  }
+
+  @include breakpoint($phabletOnly) {
+    @include column(3, $phabletTotalColumns, $bpPhablet);
+  }
+
+  @include breakpoint($tabletOnly) {
+    @include column(4, $tabletTotalColumns, $bpTablet);
+  }
+
+  @include breakpoint($desktopOnly) {
+    @include column(6, $desktopTotalColumns, $bpDesktop);
+  }
+
+  @include breakpoint($largeDesktop) {
+    @include column(6, $largeDesktopTotalColumns, $bpLargeDesktop);
+  }
+
+  @include breakpoint($xLargeDesktop) {
+    @include column(6, $xLargeDesktopTotalColumns, $bpXLargeDesktop);
+  }
+}
+
+h1 {
+  font-weight: 200;
+  margin: 70px 0;
+}
+
+.component-example {
+  margin: 40px 0;
+}

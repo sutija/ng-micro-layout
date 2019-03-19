@@ -26,34 +26,50 @@ ml-table {
     justify-content: space-between;
   
     .page-information {
-      @include span(1, 12, $bp-lg);
+      @include column(1, 12, $bpDesktop);
     }
   
     .button {
-      @include span(1, 12, $bp-lg);
+      @include column(1, 12, $bpDesktop);
       padding-top: 10px;
       padding-bottom: 10px;
     }
   }  
 }
 
-ml-table-column {
+[ml-table-column] {
   .column{
     padding: 5px;
-  }  
+  }
+
+  .table-form-element {
+      input {
+        padding: $inputFieldPadding;
+      }
+  }
 }
 
-ml-table-container {
+[ml-table-container] {
   .row {
-    background-color: rgba(241, 244, 236, 0.26);
     transition: background-color ease 0.2s;
     &:hover {
-      background-color: rgba(195, 198, 190, 0.26);
+      background-color: $colorDefaultLighter;
     }
-  }  
+  }
+
+  .table-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-right: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
-ml-table-header {
+[ml-table-header] {
   .column {
     font-weight: bold;
     padding: 10px;

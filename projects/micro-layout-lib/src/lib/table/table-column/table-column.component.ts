@@ -71,12 +71,14 @@ export class TableColumnComponent implements OnChanges, OnDestroy {
       // Set component params
       component.componentParams.forEach(param => {
         if (param.value instanceof Function) {
-          // Subscribe to event
-          this.subscriptions$.push(
-              this.componentRef.instance[param.name]
-                  .subscribe(e => {
-                    param.value(e);
-                  }));
+          if (this.componentRef.instance[param.name]) {
+            // Subscribe to event
+            this.subscriptions$.push(
+                this.componentRef.instance[param.name]
+                    .subscribe(e => {
+                      param.value(e);
+                    }));
+          }
         } else {
           // Set param
           this.componentRef.instance[param.name] = param.value;

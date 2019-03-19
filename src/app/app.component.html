@@ -1,35 +1,72 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div ngClass="container">
+    <div style="text-align:center">
+        <h1>
+            Welcome to {{ title }}!
+        </h1>
+    </div>
+    <div class="component-example">
+        <div ngClass="grid">
+            <ml-card ngClass="sample-column">
+                <ml-card-header>Header</ml-card-header>
+                <ml-card-container>Content</ml-card-container>
+                <ml-card-footer>Footer</ml-card-footer>
+            </ml-card>
+        </div>
+    </div>
+
+    <ml-card class="component-example">
+        <ml-card-header>Table example</ml-card-header>
+        <ml-card-container>
+            <ml-table [tableOptions]="tableOptions" [data]="tableData"></ml-table>
+        </ml-card-container>
+        <ml-card-footer>Footer</ml-card-footer>
+    </ml-card>
+
+    <form (submit)="$event.preventDefault">
+        <ml-card class="component-example">
+            <ml-card-header>On/Off component</ml-card-header>
+            <ml-card-container>
+                <ml-switch [value]="true"></ml-switch>
+            </ml-card-container>
+            <ml-card-footer>Search, select drop items</ml-card-footer>
+        </ml-card>
+
+        <ml-card class="component-example">
+            <ml-card-header>Button component</ml-card-header>
+            <ml-card-container>
+                <ml-button>Button</ml-button>
+            </ml-card-container>
+            <ml-card-footer>Search, select drop items</ml-card-footer>
+        </ml-card>
+
+        <ml-card class="component-example">
+            <ml-card-header>Drop component</ml-card-header>
+            <ml-card-container>
+                <ml-drop name="drop" [items]="[{
+                  id: 1,
+                  parentId: 0,
+                  title: 'test'}]">
+                </ml-drop>
+            </ml-card-container>
+            <ml-card-footer>Search, select drop items</ml-card-footer>
+        </ml-card>
+
+        <ml-card class="component-example">
+            <ml-card-header>Parts component</ml-card-header>
+            <ml-card-container>
+                <ml-parts name="parts" ngModel></ml-parts>
+            </ml-card-container>
+            <ml-card-footer>Show array elements separated</ml-card-footer>
+        </ml-card>
+        <div class="component-example">
+            <ml-message [message]="'test'"></ml-message>
+        </div>
+    </form>
+    <div class="component-example">
+        <ml-progress
+                [progressPercent]="50"
+                [progressText]="'50%'"
+        ></ml-progress>
+    </div>
+    <ml-virtual-grid></ml-virtual-grid>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-<form (submit)="$event.preventDefault">
-  <ml-switch [value]="true"></ml-switch>
-  <ml-button>Test</ml-button>
-  <ml-card>
-    <ml-card-header>Header</ml-card-header>
-    <ml-card-container>Content</ml-card-container>
-    <ml-card-footer>Footer</ml-card-footer>
-  </ml-card>
-  <ml-drop name="drop" [items]="[{
-    id: 0,
-    parentId: -1,
-    title: 'test'}]">
-  </ml-drop>
-  <ml-parts name="parts" ngModel></ml-parts>
-  <ml-message [message]="'test'"></ml-message>
-</form>

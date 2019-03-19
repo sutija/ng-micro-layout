@@ -11,11 +11,13 @@ import {FormsModule} from '@angular/forms';
 import {FormModule} from './form/form.module';
 import {MessageModule} from './message/message.module';
 import { MicroLayoutLibComponent } from './micro-layout-lib.component';
+import { VirtualGridComponent } from './virtual-grid/virtual-grid.component';
 
 @NgModule({
     declarations: [
         ArrayToChunksPipe,
-        MicroLayoutLibComponent
+        MicroLayoutLibComponent,
+        VirtualGridComponent
     ],
     imports: [
         FormModule,
@@ -36,7 +38,8 @@ import { MicroLayoutLibComponent } from './micro-layout-lib.component';
         ProgressModule,
         TableModule,
         FormModule,
-        MessageModule
+        MessageModule,
+        VirtualGridComponent
     ],
     providers: [ArrayToChunksPipe, Ng2OrderPipe]
 })

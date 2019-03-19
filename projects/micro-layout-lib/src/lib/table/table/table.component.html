@@ -1,10 +1,9 @@
-<div ngClass="wrapper">
-  <table
-          [ngClass]="{
+<table
+        [ngClass]="{
         'table-isLoading': isLoading,
         'table': true
     }"
-  >
+>
     <thead ml-table-header [data]="header" ngClass="header" [isEditable]="tableOptions.isEditable"></thead>
     <tbody ml-table-container
            *ngIf="tableOptions.isReordable"
@@ -12,21 +11,24 @@
            [data]="container"
            ngClass="table-container"
     ></tbody>
-    <tbody ml-table-container *ngIf="!tableOptions.isReordable" [isEditable]="tableOptions.isEditable" [data]="container" class="Table__Container"></tbody>
-  </table>
-</div>
+    <tbody ml-table-container *ngIf="!tableOptions.isReordable" [isEditable]="tableOptions.isEditable"
+           [data]="container" class="Table__Container"></tbody>
+</table>
 <div ngClass="table-navigation">
-  <button [disabled]="isLoading" ngClass="button" (click)="onPreviousPage()" *ngIf="currentPage > 0">Previous page</button>
-  <span ngClass="page-information">{{ getCurrentPage() }} / {{ numOfPages }}</span>
-  <button [disabled]="isLoading" ngClass="button" (click)="onNextPage()" *ngIf="currentPage < numOfPages - 1">Next page</button>
+    <button [disabled]="isLoading" ngClass="button" (click)="onPreviousPage()" *ngIf="currentPage > 0">Previous page
+    </button>
+    <span ngClass="page-information">{{ getCurrentPage() }} / {{ numOfPages }}</span>
+    <button [disabled]="isLoading" ngClass="button" (click)="onNextPage()" *ngIf="currentPage < numOfPages - 1">Next
+        page
+    </button>
 </div>
 <div *ngIf="tableOptions.canChangeNumberOfItems">
-  <div class="form-Item">
-    <label># of items</label>
-    <select (change)="onChangeNumberOfItems($event.target.value)">
-      <option value="50">50</option>
-      <option value="100">100</option>
-      <option value="200">200</option>
-    </select>
-  </div>
+    <div class="form-Item">
+        <label># of items</label>
+        <select (change)="onChangeNumberOfItems($event.target.value)">
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+        </select>
+    </div>
 </div>

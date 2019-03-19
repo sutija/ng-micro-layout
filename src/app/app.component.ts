@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
+import {TABLE_DATA, TABLE_OPTIONS} from './app.constants';
+import {ButtonComponent} from '../../projects/micro-layout-lib/src/lib/buttons/button/button.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  entryComponents: [ButtonComponent]
 })
 export class AppComponent {
   title = 'micro-layout';
+  tableOptions = TABLE_OPTIONS;
+  tableData = TABLE_DATA;
 }

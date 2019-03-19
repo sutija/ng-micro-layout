@@ -11,10 +11,7 @@ describe('ButtonComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ButtonComponent ],
-      imports: [
-        CommonModule,
-        BrowserModule
-      ],
+      imports: [CommonModule]
     })
     .compileComponents();
   }));

@@ -1,0 +1,10 @@
+<div [ngClass]="{
+'virtual-grid': true,
+'-visible': visible
+}" (keyup)="toggle($event)">
+  <div class="grid-container">
+    <div class="grid">
+      <span *ngFor="let i of range"></span>
+    </div>
+  </div>
+</div>

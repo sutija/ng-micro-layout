@@ -1,0 +1,18 @@
+ml-message {
+  .message {
+    background-color: gray;
+    padding: 20px;
+  }
+  
+  .error {
+    background-color: #ffe3d9;
+  }
+  
+  .info {
+    background-color: rgba(19, 89, 129, 0.31);
+  }
+  
+  .success {
+    background-color: rgba(20, 129, 46, 0.31);
+  }  
+}

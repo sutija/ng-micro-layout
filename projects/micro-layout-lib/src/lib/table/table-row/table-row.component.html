@@ -9,11 +9,11 @@
 ></td>
 <td *ngIf="isEditable">
   <button
-          class="Button Button--small Button--primary"
+          class="table-button"
           (click)="edit()"
           *ngIf="!isEditing"
   >Edit</button>
-  <button class="Button Button--small" (click)="delete()" *ngIf="!isEditing">Delete</button>
-  <button class="Button Button--small Button--primary" (click)="save()" *ngIf="isEditing">Save</button>
-  <button class="Button Button--small" (click)="cancel()" *ngIf="isEditing">Cancel</button>
+  <button class="table-button" (click)="delete()" *ngIf="!isEditing">Delete</button>
+  <button class="table-button" (click)="save()" *ngIf="isEditing">Save</button>
+  <button class="table-button" (click)="cancel()" *ngIf="isEditing">Cancel</button>
 </td>
