@@ -1,0 +1,180 @@
+@import "vars";
+
+/* COLUMNS */
+$grid-columns:
+        4, /* Mobile */
+        6, /* Phablet */
+        8, /* Tablet */
+        12, /* Desktop */
+        12; /* Large desktop */
+
+/* GUTTERS */
+$grid-gutter:
+        5px, /* Mobile */
+        5px, /* Phablet */
+        10px, /* Tablet */
+        10px, /* Desktop */
+        10px; /* Large desktop */
+
+/* CONTAINERS */
+$container:
+        calc(100vw - nth($container-margin, $bp-sm) * 2), /* Mobile */
+        calc(100vw - nth($container-margin, $bp-smL) * 2), /* Phablet */
+        calc(100vw - nth($container-margin, $bp-md) * 2), /* Tablet */
+        calc(100vw - nth($container-margin, $bp-lg) * 2), /* Desktop */
+        calc(100vw - nth($container-margin, $bp-xl) * 2); /* Large desktop */
+
+@function getGridGutter($bp) {
+  @return nth($grid-gutter, $bp);
+}
+
+/**
+ Create custom column
+ example: custom-column(1, 12, margin-left);
+ It Will add margin-left property size of 1 column
+**/
+@mixin custom-column ($grid-col-size: 6, $number-of-grids: 12, $property: width) {
+  #{$property}: percentage($grid-col-size / $number-of-grids);
+}
+
+@mixin span ($grid-col-size: 6, $number-of-grids: 12, $breakpoint: 2) {
+  @include custom-column($grid-col-size, $number-of-grids, width);
+  @include custom-column($grid-col-size, $number-of-grids, flex-basis);
+  box-sizing: border-box;
+  padding: 0 nth($grid-gutter, $breakpoint);
+}
+
+@function offset-left ($grid-col-size: 6, $number-of-grids: 12) {
+  @return (($grid-col-size / $number-of-grids) * 100)*1%;
+}
+
+/**
+Creates grid container
+**/
+@mixin grid-container {
+  display: flex;
+  flex-basis: auto;
+  flex-direction: row;
+  width: auto;
+  @include breakpoint($mobileOnly) {
+    margin-right: -(getGridGutter($bp-sm));
+    margin-left: -(getGridGutter($bp-sm));
+  }
+  @include breakpoint($phablet) {
+    margin-left: -(getGridGutter($bp-smL));
+    margin-right: -(getGridGutter($bp-smL));
+  }
+  @include breakpoint($desktop) {
+    margin-right: -(getGridGutter($bp-lg));
+    margin-left: -(getGridGutter($bp-lg));
+  }
+  @include breakpoint($largeDesktop) {
+    margin-left: -(getGridGutter($bp-xl));
+    margin-right: -(getGridGutter($bp-xl));
+  }
+}
+
+/**
+Container in grid-container
+**/
+@mixin nested-grid-container {
+  @include grid-container;
+  @include breakpoint($mobileOnly) {
+    margin: 0;
+    padding: 0;
+  }
+  @include breakpoint($phablet) {
+    margin: 0;
+    padding: 0;
+  }
+  @include breakpoint($desktop) {
+    margin: 0;
+    padding: 0;
+  }
+  @include breakpoint($largeDesktop) {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/*
+Virtual grid for testing
+*/
+.virtualGrid {
+  position: fixed;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+
+  &.-visible {
+    display: flex;
+  }
+
+  .gridContainer {
+    width: 100%;
+
+    @include breakpoint($mobileOnly) {
+      margin: 0 nth($container-margin, $bp-sm);
+    }
+
+    @include breakpoint($phablet) {
+      margin: 0 nth($container-margin, $bp-smL);
+    }
+
+    @include breakpoint($tabletOnly) {
+      margin: 0 nth($container-margin, $bp-md);
+    }
+
+    @include breakpoint($desktop) {
+      margin: 0 nth($container-margin, $bp-lg);
+    }
+  }
+
+  .grid {
+    @include grid-container();
+
+    height: 100%;
+
+    span {
+      &:after {
+        background-color: rgba(0, 0, 0, .1);
+        content: '';
+        display: block;
+        height: 100%;
+      }
+
+      @include breakpoint($mobileOnly) {
+        @include span(1, 4, $bp-sm);
+        &:nth-of-type(n + 5) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($phabletOnly) {
+        @include span(1, 6, $bp-smL);
+        &:nth-of-type(n + 7) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($tabletOnly) {
+        @include span(1, 8, $bp-md);
+        &:nth-of-type(n + 7) {
+          display: block;
+        }
+        &:nth-of-type(n + 9) {
+          display: none;
+        }
+      }
+
+      @include breakpoint($desktop) {
+        @include span(1, 12, $bp-lg);
+        display: block;
+      }
+    }
+  }
+}

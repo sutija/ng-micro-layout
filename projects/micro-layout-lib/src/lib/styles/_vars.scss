@@ -1,0 +1,128 @@
+$colorBackground: rgba(0,0,0,.1);
+$colorLight: #fff;
+
+$colorPrimary: #106387;
+$colorTextPrimary: white;
+
+$colorDefault: gray;
+$colorDefaultLight: #dedede;
+$colorTextDefault: black;
+
+// Breakpoints
+$bpS: "small";
+$bpM: "medium";
+$bpM-only: "medium-only";
+$bpL: "large";
+$bpXL: "x-large";
+$bpXXL: "xx-large";
+
+@mixin on($breakpoint) {
+  @if $breakpoint == $bpS {
+    @media (max-width: 640px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == $bpM {
+    @media (min-width: 640px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == $bpM-only {
+    @media (min-width: 640px) and (max-width: 1100px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == $bpL {
+    @media (min-width: 1100px) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == $bpXL {
+    @media (min-width: 1600px) {
+      @content;
+    }
+  }
+  @else if $breakpoint == "xx-large" {
+    @media (min-width: 1920px) {
+      @content;
+    }
+  }
+}
+
+$mobileOnly: mobileonly;
+$phablet: phablet;
+$phabletOnly: phabletOnly;
+$tablet: tablet;
+$tabletOnly: tabletOnly;
+$laptop: laptop;
+$desktop: desktop;
+$largeDesktop: large_desktop;
+$xLargeDesktop: x_large_desktop;
+
+$bp-sm: 1;
+$bp-smL: 2;
+$bp-md: 3;
+$bp-lg: 4;
+$bp-xl: 5;
+
+$container-margin: 7.8%, 7.8%, 5%, 5%, 12.5%;
+
+// Size
+$headerHeight: 88px, 100px, 100px, 100px, 100px;
+
+@mixin breakpoint($point) {
+  @if $point==x_large_desktop {
+    @media (min-width: 140rem) {
+      @content;
+    }
+  } @else if $point==large_desktop {
+    @media (min-width: 120rem) {
+      @content;
+    }
+  } @else if $point==desktop {
+    @media (min-width: 70rem) {
+      @content;
+    }
+  } @else if $point==tablet {
+    @media (min-width: 50rem) {
+      @content;
+    }
+  } @else if $point==tabletOnly {
+    @media (min-width: 50rem) and (max-width: 69rem) {
+      @content;
+    }
+  } @else if $point==phablet {
+    @media (min-width: 37.5rem) {
+      @content;
+    }
+  } @else if $point==phabletOnly {
+    @media (min-width: 37.5rem) and (max-width: 50rem) {
+      @content;
+    }
+  } @else if $point==mobileonly {
+    @media (max-width: 37.5rem) {
+      @content;
+    }
+  }
+}
+
+@mixin container($bp) {
+  margin: 0 nth($container-margin, $bp);
+}
+
+/*
+  Button
+*/
+$buttonPadding: 10px;
+$buttonGroupPadding: 10px 0 0 0;
+$buttonGroupButtonMargin: 0 5px 0 0;
+
+/**
+Card
+**/
+$cardBackgroundColor: #fff;
+$cardPadding:10px;

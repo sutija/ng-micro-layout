@@ -1,0 +1,19 @@
+<td
+        ml-table-column
+        [hidden]="key === '_id'"
+        *ngFor="let key of getColumnsData(); trackBy: trackColumn"
+        [(data)]="_data[key]"
+        [columnType]="getColumnTypeByKey(key)"
+        [isEditing]="isEditing && getColumnIsEditableByKey(key)"
+        (onClick)="elementSelected()"
+></td>
+<td *ngIf="isEditable">
+  <button
+          class="Button Button--small Button--primary"
+          (click)="edit()"
+          *ngIf="!isEditing"
+  >Edit</button>
+  <button class="Button Button--small" (click)="delete()" *ngIf="!isEditing">Delete</button>
+  <button class="Button Button--small Button--primary" (click)="save()" *ngIf="isEditing">Save</button>
+  <button class="Button Button--small" (click)="cancel()" *ngIf="isEditing">Cancel</button>
+</td>

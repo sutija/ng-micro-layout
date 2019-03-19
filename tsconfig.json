@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "micro-layout-lib": [
+        "dist/micro-layout-lib"
+      ],
+      "micro-layout-lib/*": [
+        "dist/micro-layout-lib/*"
+      ]
+    }
   }
 }

@@ -1,0 +1,30 @@
+<div ngClass="search-and-selected">
+  <div *ngIf="!searchActive" (click)="activateSearch()" ngClass="selected">
+    <span *ngFor="let pathItem of path">{{pathItem.title}}</span>
+  </div>
+  <input *ngIf="searchActive"
+         type="text"
+         [(ngModel)]="searchText"
+         (keyup)="onKeyUp($event)"
+         [autofocus]="searchActive"
+         ngClass="search-field"
+         placeholder="search..."
+  />
+  <ml-button
+          (click)="dropToggle($event)"
+          type="button" ngClass="drop-button"
+          *ngIf="!searchActive"
+          [types]="dropButtonStyles"
+  >
+    <svg ngClass="toggle-image {{dropVisible ? '-active' : null}}" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16">
+      <polygon id="toggle-icon" points="16 8.95 7.06 0 0 0 16 16 32 0 24.95 0 16 8.95" style="fill:#231f20"/></svg>
+  </ml-button>
+</div>
+<div *ngIf="searchActive" ngClass="results">
+  <ul>
+    <li *ngFor="let item of foundItems" ngClass="result-item" (click)="selectItem(item)">{{item.title}}</li>
+  </ul>
+</div>
+<div *ngIf="dropVisible" ngClass="drop-list">
+  <ml-drop-items [parentId]="0" [isOpened]="true"></ml-drop-items>
+</div>

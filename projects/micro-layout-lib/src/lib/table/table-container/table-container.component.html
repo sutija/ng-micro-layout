@@ -1,0 +1,6 @@
+<tr
+        ml-table-row
+        [ngClass]="getClass(row)"
+        *ngFor="let row of data"
+        [data]="row"
+        [isEditable]="isEditable"></tr>

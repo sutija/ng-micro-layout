@@ -1,0 +1,17 @@
+<ul *ngIf="isOpened" ngClass="drop-items">
+    <li *ngFor="let item of getItems(); let i = index;" ngClass="drop-item">
+
+        <button
+                ngClass="button-toggle"
+                *ngIf="hasChildren(item.id)"
+                (click)="toggleChildren(i)"
+        >{{childrenVisible[i] ? '-' : '+'}}</button>
+
+        <span (click)="selectItem(item)" ngClass="title {{!hasChildren(item.id) ? 'no-children' : null}}">{{item.title}}</span>
+        <ml-drop-items
+                [parentId]="item.id"
+                [isOpened]="childrenVisible[i]"
+                ngClass="drop-items-children"
+        ></ml-drop-items>
+    </li>
+</ul>

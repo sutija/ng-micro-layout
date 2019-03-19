@@ -1,0 +1,12 @@
+<div ngClass="parts-input">
+  <input (keyup)="onKeyUp($event)" #element />
+  <ml-button (click)="addPart()" type="button" [types]="addButtonClass">add</ml-button>
+</div>
+<div ngClass="parts">
+  <ul>
+    <li *ngFor="let item of parts; let i = index;">
+      <span>{{item}}</span>
+      <ml-button (click)="removePart(i)" type="button" [types]="removeButtonClass">X</ml-button>
+    </li>
+  </ul>
+</div>

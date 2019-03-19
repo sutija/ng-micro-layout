@@ -1,0 +1,66 @@
+@import "vars";
+@import "fonts";
+
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+section,
+page,
+p,
+span,
+button,
+ul,
+li,
+a,
+input,
+textarea {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+}
+li {
+  list-style: none;
+}
+html {
+  @include standardFont();
+  font-size: 14px;
+  line-height: normal;
+}
+
+body {
+  background-color: $colorBackground;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+h1 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+main {
+  section {
+    padding-top: 100px;
+    @include breakpoint($mobileOnly) {
+      margin: 0 nth($container-margin, $bp-sm);
+    }
+
+    @include breakpoint($phablet) {
+      margin: 0 nth($container-margin, $bp-smL);
+    }
+
+    @include breakpoint($tabletOnly) {
+      margin: 0 nth($container-margin, $bp-md);
+    }
+
+    @include breakpoint($desktop) {
+      margin: 0 nth($container-margin, $bp-lg);
+    }
+  }
+}

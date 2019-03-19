@@ -1,0 +1,25 @@
+ml-switch {
+  .switch-container {
+    height: 20px;
+    width: 60px;
+    background-color: #d2d2d2;
+    cursor: pointer;
+  }
+  .button {
+    width: 30px;
+    height: 24px;
+    transform: translate3d(0, -2px, 0);
+    background-color: gray;
+    transition: transform 0.1s ease-in;
+  }
+  
+  .switch-on {
+    .container {
+      background-color: rgba(91, 171, 1, .23);
+    }
+    .button {
+      background-color: #5eaf01;
+      transform: translate3d(30px, -2px, 0);
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<tr ngClass="header-row">
+  <th
+          [hidden]="columnName === '_id'"
+          *ngFor="let columnName of getData(); let i = index;" ngClass="column">
+    <button
+            (click)="sortItems(columnName)"
+            class="Table__OrderButton"
+            title="Click to reorder"
+    >{{data[columnName].title}}
+    </button>
+  </th>
+  <th *ngIf="isEditable">&nbsp;</th>
+</tr>

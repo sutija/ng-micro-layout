@@ -17,4 +17,19 @@
     <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
   </li>
 </ul>
-
+<form (submit)="$event.preventDefault">
+  <ml-switch [value]="true"></ml-switch>
+  <ml-button>Test</ml-button>
+  <ml-card>
+    <ml-card-header>Header</ml-card-header>
+    <ml-card-container>Content</ml-card-container>
+    <ml-card-footer>Footer</ml-card-footer>
+  </ml-card>
+  <ml-drop name="drop" [items]="[{
+    id: 0,
+    parentId: -1,
+    title: 'test'}]">
+  </ml-drop>
+  <ml-parts name="parts" ngModel></ml-parts>
+  <ml-message [message]="'test'"></ml-message>
+</form>
