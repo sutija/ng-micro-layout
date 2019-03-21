@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DropItem} from '../drop';
 import {DropService} from '../drop.service';
-import { DropComponent } from '../drop.component';
 
 @Component({
   selector: 'ml-drop-items, [ml-drop-items]',
   templateUrl: './drop-items.component.html',
+  providers: []
 })
 export class DropItemsComponent implements OnInit {
   @Input() parentId;

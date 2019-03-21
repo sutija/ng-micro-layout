@@ -1,6 +1,6 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {BUTTON_POSITIONS, BUTTON_STYLES, BUTTON_TYPES} from '../../buttons/button/button.constants';
+import {BUTTON_POSITIONS, BUTTON_STYLES} from '../../buttons/button/button.constants';
 
 @Component({
   selector: 'ml-parts',

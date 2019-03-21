@@ -13,7 +13,7 @@ form {
     height: 40px;
     min-height: 40px;
     outline: none;
-    padding: 10px;
+    padding: $inputFieldPadding;
     transition: border-color ease 0.4s;
     width: 100%;
 

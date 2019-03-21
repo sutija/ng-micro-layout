@@ -23,7 +23,7 @@
     "core-js": "^2.5.4",
     "ng2-order-pipe": "~0.1.5",
     "rxjs": "~6.3.3",
-    "simple-scss-grid-layout": "^1.0.0",
+    "simple-scss-grid-layout": "^1.0.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },

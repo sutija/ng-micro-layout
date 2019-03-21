@@ -1,3 +1,6 @@
+// Import google fonts
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&subset=latin-ext');
+
 @import "~node_modules/simple-scss-grid-layout/scss/vars";
 @import "~node_modules/simple-scss-grid-layout/scss/layout";
 @import "~node_modules/simple-scss-grid-layout/scss/grid";
@@ -17,14 +20,3 @@
 @import "components/message";
 @import "components/table";
 @import "components/virtual-grid";
-
-// Import google fonts
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&subset=latin-ext');
-
-.grid {
-  @include grid-container();
-}
-
-.container {
-  @include container($bpDesktop);
-}

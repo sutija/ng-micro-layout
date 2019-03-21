@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VirtualGridComponent } from './virtual-grid.component';
+import {VirtualGridService} from './virtual-grid.service';
 
 describe('VirtualGridComponent', () => {
   let component: VirtualGridComponent;
@@ -8,7 +9,8 @@ describe('VirtualGridComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VirtualGridComponent ]
+      declarations: [ VirtualGridComponent ],
+      providers: [VirtualGridService]
     })
     .compileComponents();
   }));
