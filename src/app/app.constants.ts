@@ -35,43 +35,43 @@ export const TABLE_OPTIONS: TableOptions = {
             isEditable: false,
             defaultValue: null
         },
-        'password': {
-            title: 'Password',
+        'something': {
+            title: 'Something',
             type: TABLE_COLUMN_TYPES.STRING,
             isEditable: true,
             defaultValue: ''
         },
     }
-}
+};
 
 export const TABLE_DATA = [{
     id: 12,
     title: 'test',
-    password: 'test',
+    something: 'test',
     other: false,
 },
     {
         id: 13,
-        password: 'test 9',
+        something: 'test 9',
         other: false,
     },
     {
         id: 14,
         title: 12345,
-        password: 'test 5',
+        something: 'test 5',
         other: false,
     },
     {
         id: 16,
-        title: 'Ovo postoji',
-        password: 'password',
+        title: 'Exists',
+        something: 'password',
         other: false,
-        some: 'Ovo ne postoji!'
+        some: 'Doesn\'t exists'
     },
     {
         id: 15,
         title: 'test 3',
-        password: 'test 1',
+        something: 'test 1',
         component: [
             {
                 component: ButtonComponent,
@@ -82,7 +82,7 @@ export const TABLE_DATA = [{
                     },
                     {
                         name: 'className',
-                        value: 'Button--lightPrimary Button--small'
+                        value: 'button button-primary'
                     },
                     {
                         name: 'clicked',
@@ -101,7 +101,7 @@ export const TABLE_DATA = [{
                     },
                     {
                         name: 'className',
-                        value: 'Button--light Button--small'
+                        value: 'button button-primary'
                     },
                     {
                         name: 'clicked',
@@ -112,5 +112,5 @@ export const TABLE_DATA = [{
                 ]
             }
         ],
-        other: 'something',
+        other: true,
     }];

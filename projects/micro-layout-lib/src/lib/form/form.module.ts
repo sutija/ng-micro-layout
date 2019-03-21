@@ -6,7 +6,7 @@ import { DropItemsComponent } from './drop/drop-items/drop-items.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {ButtonsModule} from '../buttons/buttons.module';
-import { AliasComponent } from './alias/alias.component';
+import { SlugComponent } from './slug/slug.component';
 import { PartsComponent } from './parts/parts.component';
 
 @NgModule({
@@ -14,7 +14,7 @@ import { PartsComponent } from './parts/parts.component';
         SwitchComponent,
         DropComponent,
         DropItemsComponent,
-        AliasComponent,
+        SlugComponent,
         PartsComponent
     ],
     imports: [
@@ -24,7 +24,7 @@ import { PartsComponent } from './parts/parts.component';
         BrowserModule
     ],
     exports: [
-        AliasComponent,
+        SlugComponent,
         SwitchComponent,
         PartsComponent,
         DropComponent,

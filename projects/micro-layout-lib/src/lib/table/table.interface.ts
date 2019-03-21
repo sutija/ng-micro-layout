@@ -1,5 +1,3 @@
-import { Internal, External } from './table.constants';
-
 export interface Link {
     id?: Number | String;
     title: String;
@@ -53,7 +51,7 @@ export interface TableRow {
 }
 
 export interface TableHeader {
-    columns: Array<TableHeaderColumn>
+    columns: Array<TableHeaderColumn>;
 }
 
 export interface Table {
@@ -67,7 +65,7 @@ export interface Table {
 }
 
 export interface TableSchema {
-    [key: string]: TableColumnSchema
+    [key: string]: TableColumnSchema;
 }
 
 export interface TableOptions {

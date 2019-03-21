@@ -2,15 +2,15 @@ import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
-  selector: 'ml-alias',
-  templateUrl: './alias.component.html',
-  providers: [{provide: NG_VALUE_ACCESSOR, useExisting: AliasComponent, multi: true}]
+  selector: 'ml-slug',
+  templateUrl: './slug.component.html',
+  providers: [{provide: NG_VALUE_ACCESSOR, useExisting: SlugComponent, multi: true}]
 })
-export class AliasComponent extends FormControl implements ControlValueAccessor {
+export class SlugComponent extends FormControl implements ControlValueAccessor {
   @Input() value: string;
   @ViewChild('element') element: ElementRef;
   onChange;
-  onTouch;
+  onTouched;
 
   constructor() {
     super();
@@ -23,16 +23,16 @@ export class AliasComponent extends FormControl implements ControlValueAccessor 
       this.onChange(this.value);
   }
 
-  writeValue(obj: string): void {
+  writeValue(obj: string) {
     this.value = obj;
   }
 
-  registerOnChange(fn: Function): void {
+  registerOnChange(fn: Function) {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
-    this.onTouch = fn;
+  registerOnTouched(fn: Function) {
+    this.onTouched = fn;
   }
 
 }

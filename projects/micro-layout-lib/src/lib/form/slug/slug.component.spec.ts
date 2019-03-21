@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AliasComponent } from './alias.component';
+import { SlugComponent } from './slug.component';
 
-describe('AliasComponent', () => {
-  let component: AliasComponent;
-  let fixture: ComponentFixture<AliasComponent>;
+describe('SlugComponent', () => {
+  let component: SlugComponent;
+  let fixture: ComponentFixture<SlugComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AliasComponent ]
+      declarations: [ SlugComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AliasComponent);
+    fixture = TestBed.createComponent(SlugComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

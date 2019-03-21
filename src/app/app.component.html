@@ -22,7 +22,7 @@
         <ml-card-footer>Footer</ml-card-footer>
     </ml-card>
 
-    <form (submit)="$event.preventDefault">
+    <form (ngSubmit)="onSubmit(form)" #form="ngForm" novalidate>
         <ml-card class="component-example">
             <ml-card-header>On/Off component</ml-card-header>
             <ml-card-container>
@@ -58,15 +58,33 @@
             </ml-card-container>
             <ml-card-footer>Show array elements separated</ml-card-footer>
         </ml-card>
-        <div class="component-example">
-            <ml-message [message]="'test'"></ml-message>
-        </div>
+
+        <ml-card class="component-example">
+            <ml-card-header>Slug component</ml-card-header>
+            <ml-card-container>
+                <ml-slug name="slug" ngModel></ml-slug>
+            </ml-card-container>
+            <ml-card-footer>Show array elements separated</ml-card-footer>
+        </ml-card>
     </form>
-    <div class="component-example">
-        <ml-progress
-                [progressPercent]="50"
-                [progressText]="'50%'"
-        ></ml-progress>
-    </div>
+    <ml-card class="component-example">
+        <ml-card-header>Message</ml-card-header>
+        <ml-card-container>
+            <ml-message [message]="'Success'" type="success" ngClass="message"></ml-message>
+            <ml-message [message]="'Error'" type="error" ngClass="message"></ml-message>
+            <ml-message [message]="'Info'" type="info" ngClass="message"></ml-message>
+        </ml-card-container>
+        <ml-card-footer>Show array elements separated</ml-card-footer>
+    </ml-card>
+    <ml-card class="component-example">
+        <ml-card-header>Progress</ml-card-header>
+        <ml-card-container>
+            <ml-progress
+                    [progressPercent]="50"
+                    [progressText]="'50%'"
+            ></ml-progress>
+        </ml-card-container>
+        <ml-card-footer>Show array elements separated</ml-card-footer>
+    </ml-card>
     <ml-virtual-grid></ml-virtual-grid>
 </div>

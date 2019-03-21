@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {TABLE_DATA, TABLE_OPTIONS} from './app.constants';
 import {ButtonComponent} from '../../projects/micro-layout-lib/src/lib/buttons/button/button.component';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,8 @@ export class AppComponent {
   title = 'micro-layout';
   tableOptions = TABLE_OPTIONS;
   tableData = TABLE_DATA;
+
+  onSubmit(f: NgForm) {
+    console.log(f);
+  }
 }
