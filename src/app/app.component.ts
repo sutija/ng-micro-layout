@@ -14,6 +14,10 @@ export class AppComponent {
   tableOptions = TABLE_OPTIONS;
   tableData = TABLE_DATA;
 
+  closeMessage() {
+    console.log('close');
+  }
+
   onSubmit(f: NgForm) {
     console.log(f);
   }

@@ -1,1 +1,4 @@
-<div [ngClass]="getClass()" *ngIf="message">{{message}}</div>
+<div [ngClass]="getClass()" *ngIf="message">
+    <span ngClass="message-text">{{message}}</span>
+    <button ngClass="message-close" (click)="onClose()">X</button>
+</div>

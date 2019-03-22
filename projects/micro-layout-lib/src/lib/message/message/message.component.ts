@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MessageType} from './message';
 
 @Component({
@@ -9,14 +9,25 @@ import {MessageType} from './message';
 export class MessageComponent implements OnInit {
     @Input() message: string;
     @Input() type: MessageType;
+    @Input() hasTimeOut = false;
+    @Input() timeout = 1000;
+    @Output() close: EventEmitter<boolean> = new EventEmitter();
 
-    constructor() {
-    }
+    constructor() { }
 
     ngOnInit() {
+        if (this.hasTimeOut) {
+            setTimeout(() => {
+                this.close.emit(true);
+            }, this.timeout);
+        }
     }
 
     getClass() {
         return `message ${this.type}`;
+    }
+
+    onClose() {
+        this.close.emit(true);
     }
 }

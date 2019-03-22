@@ -70,8 +70,8 @@
     <ml-card class="component-example">
         <ml-card-header>Message</ml-card-header>
         <ml-card-container>
-            <ml-message [message]="'Success'" type="success" ngClass="message"></ml-message>
-            <ml-message [message]="'Error'" type="error" ngClass="message"></ml-message>
+            <ml-message [message]="'Success'" type="success" ngClass="message" (close)="closeMessage()"></ml-message>
+            <ml-message [message]="'Error'" type="error" ngClass="message" [hasTimeOut]="true" (close)="closeMessage()"></ml-message>
             <ml-message [message]="'Info'" type="info" ngClass="message"></ml-message>
         </ml-card-container>
         <ml-card-footer>Show array elements separated</ml-card-footer>

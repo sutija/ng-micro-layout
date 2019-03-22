@@ -1,7 +1,8 @@
 ml-message {
   .message {
     background-color: gray;
-    padding: 20px;
+    display: flex;
+    justify-content: space-between;
   }
   
   .error {
@@ -14,5 +15,22 @@ ml-message {
   
   .success {
     background-color: rgba(20, 129, 46, 0.31);
-  }  
+  }
+
+  .message-text {
+    padding: 20px;
+  }
+
+  .message-close {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color ease 0.6s;
+    width: 40px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, .2);
+      color: white;
+    }
+  }
 }
