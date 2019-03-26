@@ -1,42 +1,19 @@
+@import "../colors";
+@import "../fonts";
+@import "../vars";
+
 ml-card {
   .card {
-    background-color: $cardBackgroundColor;
+    @include shadow;
+    background-color: $colorLight;
     margin-bottom: 20px;
-    box-shadow: rgba(0, 0, 0, .1) 0 0 10px;
 
-    &--inline {
-      display: inline-flex;
-    }
-
-    &--colapsed {
-      .Card__Content {
-        height: 0;
-        overflow: hidden;
-        padding: 0;
+    &.card-collapsed {
+      ml-card-footer {
+        .wrapper {
+          border: none;
+        }
       }
-    }
-
-    &__header {
-      border-bottom: solid 1px rgba(0, 0, 0, .1);
-      padding: 0 0 10px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      align-content: space-between;
-
-      .Form__Item {
-        padding: 0;
-        margin: 0;
-      }
-    }
-
-    &__headerTitle {
-      font-weight: 200;
-    }
-
-    &__content {
-      border-bottom: solid 1px rgba(0, 0, 0, .1);
-      padding: 10px 0 10px 0;
     }
   }
 }
@@ -45,19 +22,31 @@ ml-card-header {
   .wrapper {
     @include standardFont();
     border-bottom: solid 1px #dcdcdc;
-    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: $padding;
+  }
+
+  .toggle-collapse {
+    cursor: pointer;
   }
 }
 
 ml-card-container {
   .wrapper {
-    padding: 20px;
+    padding: $padding;
+    &.collapsed {
+      border-bottom: none;
+      height: 0;
+      overflow: hidden;
+      padding: 0;
+    }
   }
 }
 
 ml-card-footer {
   .wrapper {
     border-top: solid 1px #dcdcdc;
-    padding: 20px;
-  }    
+    padding: $padding;
+  }
 }

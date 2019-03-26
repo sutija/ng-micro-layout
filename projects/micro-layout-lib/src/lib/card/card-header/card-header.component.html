@@ -1,3 +1,6 @@
 <div ngClass="wrapper">
-    <ng-content></ng-content>
+    <div>
+        <ng-content></ng-content>
+    </div>
+    <div *ngIf="canCollapse" [ngClass]="{'toggle-collapse': true, 'collapsed': isCollapsed}" (click)="toggleCollapse()">{{ isCollapsed ? '+' : '-'}}</div>
 </div>

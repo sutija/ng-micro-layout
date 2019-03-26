@@ -1,4 +1,7 @@
-<div ngClass="card">
+<div [ngClass]="{
+'card': true,
+'card-collapsed': isCollapsed
+}">
   <ng-content select="ml-card-header, [ml-card-header]"></ng-content>
   <ng-content select="ml-card-container, [ml-card-container]"></ng-content>
   <ng-content select="ml-card-footer, [ml-card-footer]"></ng-content>
