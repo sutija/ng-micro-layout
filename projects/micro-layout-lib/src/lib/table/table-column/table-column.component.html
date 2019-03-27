@@ -1,5 +1,4 @@
 <div
-    id="{{data.id}}"
     *ngIf="data !== null && !isEditing && (columnType !== tableColumnTypes.COMPONENT)"
     ngClass="column"
 >
@@ -7,7 +6,6 @@
 </div>
 <div #columnComponent class="component"></div>
 <div
-        id="{{ data.id }}"
         [ngSwitch]="columnType"
         *ngIf="data !== null && isEditing && isEditable"
         class="column table-form-element"

@@ -1,10 +1,10 @@
 <tr ngClass="header-row">
   <th
           [hidden]="columnName === '_id'"
-          *ngFor="let columnName of getData(); let i = index;" ngClass="column">
+          *ngFor="let columnName of getData()" ngClass="column">
     <button
             (click)="sortItems(columnName)"
-            class="Table__OrderButton"
+            ngClass="table-order-button"
             title="Click to reorder"
     >{{data[columnName].title}}
     </button>

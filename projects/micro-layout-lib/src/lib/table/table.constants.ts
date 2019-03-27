@@ -29,7 +29,7 @@ export const DEFAULT_TABLE_OPTIONS: TableOptions = {
     canDelete: false,
     editOption: 'internal',
     isEditable: false,
-    isReordable: false,
+    isDraggable: false,
     isSortable: false,
     numberOfItems: [50, 100, 200],
     schema: {}

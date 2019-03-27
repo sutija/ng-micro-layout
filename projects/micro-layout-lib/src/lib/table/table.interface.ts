@@ -1,3 +1,5 @@
+import {Observable} from 'rxjs';
+
 export interface Link {
     id?: Number | String;
     title: String;
@@ -74,6 +76,8 @@ export interface TableSchema {
 
 export type editOptions = 'internal' | 'external';
 
+type TableCallback = (data: TableRow) => Promise<boolean>;
+
 export interface TableOptions {
     canAddRows?: boolean;
     canDelete?: boolean;
@@ -81,7 +85,10 @@ export interface TableOptions {
     editOption?: editOptions;
     isEditable?: boolean;
     isSortable?: boolean;
-    isReordable?: boolean;
+    isDraggable?: boolean;
+    deleteCallback?: TableCallback;
+    editCallback?: TableCallback;
+    addCallback?: TableCallback;
     numberOfItems?: Array<number>;
     schema: TableSchema;
     isInternalPagination?: boolean;

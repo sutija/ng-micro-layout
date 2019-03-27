@@ -17,12 +17,13 @@ import {
 import {DEFAULT_TABLE_OPTIONS, PAGINATION} from '../table.constants';
 import {TableDataService} from '../table-data.service';
 import {TableMessagingService} from '../table-messaging.service';
+import {TableService} from '../table.service';
 
 @Component({
     selector: 'ml-table, [ml-table]',
     templateUrl: './table.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [TableDataService, TableMessagingService]
+    providers: [TableDataService, TableMessagingService, TableService]
 })
 export class TableComponent implements OnInit, OnChanges, OnDestroy {
     @Input() tableID = 'default';
@@ -45,11 +46,10 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
     dataChange$;
     getData$;
 
-    constructor(private tableDataService: TableDataService) {
+    constructor(private tableDataService: TableDataService, private tableService: TableService) {
     }
 
     ngOnInit() {
-        this.tableDataService.setTableId(this.tableID);
 
         if ((this.tableLimit > 0) && this.tableOptions.isInternalPagination) {
             this.tableDataService.setLimit(this.tableLimit);
@@ -91,6 +91,7 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
     ngOnChanges(changes) {
         if (changes.tableOptions) {
             this.tableOptions = Object.assign({}, DEFAULT_TABLE_OPTIONS, this.tableOptions);
+            this.tableService.setOptions(this.tableOptions);
         }
 
         if (changes.data) {

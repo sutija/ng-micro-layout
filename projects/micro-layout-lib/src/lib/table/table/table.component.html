@@ -6,12 +6,12 @@
 >
     <thead ml-table-header [data]="header" ngClass="header" [isEditable]="tableOptions.isEditable"></thead>
     <tbody ml-table-container
-           *ngIf="tableOptions.isReordable"
+           *ngIf="tableOptions.isDraggable"
            [isEditable]="tableOptions.isEditable"
            [data]="container"
            ngClass="table-container"
     ></tbody>
-    <tbody ml-table-container *ngIf="!tableOptions.isReordable" [isEditable]="tableOptions.isEditable"
+    <tbody ml-table-container *ngIf="!tableOptions.isDraggable" [isEditable]="tableOptions.isEditable"
            [data]="container" class="table-container"></tbody>
 </table>
 <div ngClass="table-navigation">

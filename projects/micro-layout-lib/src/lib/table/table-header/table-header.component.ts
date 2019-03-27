@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { TableMessagingService } from '../table-messaging.service';
-import { MESSAGES, CONTEXT } from '../table.constants';
+import {TableDataService} from '../table-data.service';
 
 @Component({
   selector: 'ml-table-header, [ml-table-header]',
@@ -11,7 +10,7 @@ export class TableHeaderComponent {
   @Input() data: Object = {};
   @Input() isEditable = false;
 
-  constructor(protected tableMessagingService: TableMessagingService) {}
+  constructor(protected tableDataService: TableDataService) {}
 
   getData(): Array<String> {
     if (this.data) {
@@ -22,12 +21,6 @@ export class TableHeaderComponent {
   }
 
   sortItems(label) {
-    this.tableMessagingService.notify({
-      data: {
-        sort_by: label
-      },
-      message: MESSAGES.SORT_CLICK,
-      type: CONTEXT.DEFAULT
-    });
+    this.tableDataService.reorder(label);
   }
 }

@@ -8,10 +8,13 @@ export const TABLE_OPTIONS: TableOptions = {
     canChangeNumberOfItems: true,
     canDelete: true,
     editOption: 'internal',
-    isReordable: false,
+    isDraggable: false,
     isSortable: true,
     isInternalPagination: true,
     numberOfItems: [2, 10, 20, 50],
+    deleteCallback: data => new Promise((resolve, reject) => {
+        resolve(true);
+    }),
     schema: {
         'other': {
             title: 'Other',
