@@ -12,6 +12,10 @@ export interface Drop {
     value: String | Number | Boolean;
 }
 
+export interface TableOptionsArray {
+    [index: string]: TableOptions;
+}
+
 export interface TableColumnSchema {
     defaultValue: any;
     isEditable?: Boolean;
@@ -23,10 +27,10 @@ export interface TableColumnSchema {
 
 export interface TableColumDataComponent {
     component: any;
-    componentParams: Array<TableColumDataComponentParam>;
+    componentParams: Array<TableColumnDataComponentParam>;
 }
 
-export interface TableColumDataComponentParam {
+export interface TableColumnDataComponentParam {
     name: string;
     value: any;
 }
@@ -68,14 +72,17 @@ export interface TableSchema {
     [key: string]: TableColumnSchema;
 }
 
+export type editOptions = 'internal' | 'external';
+
 export interface TableOptions {
     canAddRows?: boolean;
     canDelete?: boolean;
     canChangeNumberOfItems?: boolean;
-    editOption?: 'INTERNAL' | 'EXTERNAL';
+    editOption?: editOptions;
     isEditable?: boolean;
     isSortable?: boolean;
     isReordable?: boolean;
+    numberOfItems?: Array<number>;
     schema: TableSchema;
     isInternalPagination?: boolean;
 }

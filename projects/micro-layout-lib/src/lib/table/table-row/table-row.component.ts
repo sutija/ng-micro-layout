@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {TableMessagingService} from '../table-messaging.service';
 import {TableDataService} from '../table-data.service';
-import {CONTEXTS, MESSAGES} from '../table.constants';
+import {CONTEXT, MESSAGES} from '../table.constants';
 
 @Component({
   selector: 'ml-table-row, [ml-table-row]',
@@ -14,9 +14,6 @@ export class TableRowComponent implements OnChanges {
   @Input() deleteActivated: Boolean = false;
   @Output() select: EventEmitter<any> = new EventEmitter();
 
-  /**
-   * Local data
-   */
   public _data;
 
   constructor(private tableMessagingService: TableMessagingService,
@@ -24,9 +21,6 @@ export class TableRowComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    /**
-     * Clone global data to local data
-     */
     this._data = Object.assign({}, this.data);
   }
 
@@ -54,10 +48,6 @@ export class TableRowComponent implements OnChanges {
     return this.tableDataService.getHeaders()[key].isEditable;
   }
 
-  getDataByKey(key) {
-    return this.data[key];
-  }
-
   cancel() {
     this._data = Object.assign({}, this.data);
     this.isEditing = false;
@@ -67,7 +57,7 @@ export class TableRowComponent implements OnChanges {
     this.isEditing = !this.isEditing;
     if (this.isEditing) {
       this.tableMessagingService.notify({
-        type: CONTEXTS.DEFAULT,
+        type: CONTEXT.DEFAULT,
         message: MESSAGES.ITEM_EDIT_STARTED
       });
     }
@@ -77,7 +67,7 @@ export class TableRowComponent implements OnChanges {
     this.isEditing = false;
 
     this.tableMessagingService.notify({
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_EDIT,
       data: {
         row: this._data
@@ -88,7 +78,7 @@ export class TableRowComponent implements OnChanges {
   delete() {
     this.deleteActivated = !this.deleteActivated;
     this.tableMessagingService.notify({
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_DELETE,
       data: this._data
     });

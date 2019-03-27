@@ -5,11 +5,13 @@ import {TableOptions} from '../../projects/micro-layout-lib/src/lib/table/table.
 export const TABLE_OPTIONS: TableOptions = {
     isEditable: true,
     canAddRows: true,
+    canChangeNumberOfItems: true,
     canDelete: true,
-    editOption: 'INTERNAL',
+    editOption: 'internal',
     isReordable: false,
     isSortable: true,
     isInternalPagination: true,
+    numberOfItems: [2, 10, 20, 50],
     schema: {
         'other': {
             title: 'Other',

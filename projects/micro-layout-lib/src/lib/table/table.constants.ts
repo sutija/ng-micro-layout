@@ -10,7 +10,7 @@ export const MESSAGES = {
     MULTIPLE_DELETE: 'MULTIPLE_DELETE',
 };
 
-export const CONTEXTS = {
+export const CONTEXT = {
     DEFAULT: 'DEFAUL',
 };
 
@@ -24,21 +24,14 @@ export const TABLE_COLUMN_TYPES = {
     DATE: 'DATE'
 };
 
-export type Internal<String> = 'INTERNAL';
-export type External<String> = 'EXTERNAL';
-
-export const TABLE_EDIT_TYPE = {
-    INTERNAL: 'INTERNAL',
-    EXTERNAL: 'EXTERNAL'
-};
-
 export const DEFAULT_TABLE_OPTIONS: TableOptions = {
     canAddRows: false,
     canDelete: false,
-    editOption: 'INTERNAL',
+    editOption: 'internal',
     isEditable: false,
     isReordable: false,
     isSortable: false,
+    numberOfItems: [50, 100, 200],
     schema: {}
 };
 

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Ng2OrderPipe} from 'ng2-order-pipe';
 
 import {TableMessagingService, MessageResolver} from './table-messaging.service';
-import {MESSAGES, CONTEXTS} from './table.constants';
+import { CONTEXT, MESSAGES } from './table.constants';
 
 import {ArrayToChunksPipe} from '../pipes/array.pipe';
 
@@ -13,9 +13,7 @@ import {
 } from './table.interface';
 import {Subject} from 'rxjs';
 
-/**
- * @todo Create
- */
+
 @Injectable()
 export class TableDataService {
   public readonly dataChange: Subject<any> = new Subject();
@@ -27,7 +25,7 @@ export class TableDataService {
 
   protected callbacks = [
     {
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_EDIT_STARTED,
       callback: () => {
         console.log('item edit started');
@@ -35,7 +33,7 @@ export class TableDataService {
     },
     // On sort
     {
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.SORT_CLICK,
       callback: (data) => {
         this.reorder(data.sort_by);
@@ -43,19 +41,19 @@ export class TableDataService {
     },
     // On edit
     {
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_EDIT,
       callback: (data) => this.itemEdit(data)
     },
     // On add
     {
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_ADD,
       callback: null
     },
     // On delete
     {
-      type: CONTEXTS.DEFAULT,
+      type: CONTEXT.DEFAULT,
       message: MESSAGES.ITEM_DELETE,
       callback: (data) => {
         if (confirm(`Delete ${data.id}?`)) {
@@ -96,16 +94,8 @@ export class TableDataService {
     this.changeData();
   }
 
-  getLimit() {
-    return this.limit;
-  }
-
   getHeaders(): TableSchema {
     return this.schema;
-  }
-
-  getRows() {
-    return this.data;
   }
 
   setData(data: Array<TableRow>, schema: TableSchema) {
@@ -124,10 +114,6 @@ export class TableDataService {
     this.changeData();
   }
 
-  getNumberOfPages() {
-    return this.data.length;
-  }
-
   protected changeData() {
     const data = this.data[this.pageNumber];
     this._tableData = {
@@ -136,7 +122,6 @@ export class TableDataService {
       header: this.schema,
       numberOfPages: this.data.length,
     };
-    console.log('table id', this.tableId);
     this.tableData.next(this._tableData);
   }
 
@@ -153,7 +138,6 @@ export class TableDataService {
     const fields = Object.keys(schema);
 
     rows.forEach((oldRow) => {
-      const newColumns = [];
       const existingColumns = Object.keys(oldRow);
       fields.filter(item => !existingColumns
           .includes(item))
@@ -180,13 +164,9 @@ export class TableDataService {
 
   protected itemDelete(id) {
     this.dataChange.next({
-      type: 'delete',
-      data: id
+      data: id,
+      type: 'delete'
     });
-  }
-
-  protected resolveItemPagePosition(item) {
-
   }
 
   protected reorder(orderBy) {

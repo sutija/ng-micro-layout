@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { TableMessagingService } from '../table-messaging.service';
-import { MESSAGES, CONTEXTS } from '../table.constants';
+import { MESSAGES, CONTEXT } from '../table.constants';
 
 @Component({
   selector: 'ml-table-header, [ml-table-header]',
@@ -27,7 +27,7 @@ export class TableHeaderComponent {
         sort_by: label
       },
       message: MESSAGES.SORT_CLICK,
-      type: CONTEXTS.DEFAULT
+      type: CONTEXT.DEFAULT
     });
   }
 }
