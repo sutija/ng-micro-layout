@@ -32,8 +32,9 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
     @Input() tableLimit: number;
     @Input() numberOfPages: number; // Only if we have external page handler
     @Input() pageNumber: number; // Only if we have external page handler
+    @Output() add: EventEmitter<any> = new EventEmitter();
     @Output() update: EventEmitter<any> = new EventEmitter();
-    @Output() delete: EventEmitter<number> = new EventEmitter();
+    @Output() delete: EventEmitter<any> = new EventEmitter();
     @Output() pageChange: EventEmitter<any> = new EventEmitter();
     @Output() numberOfItemsChange: EventEmitter<number> = new EventEmitter();
     @Input() isLoading: Boolean = false;
@@ -46,37 +47,27 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
     dataChange$;
     getData$;
 
-    constructor(private tableDataService: TableDataService, private tableService: TableService) {
-    }
+    constructor(private tableDataService: TableDataService, private tableService: TableService) {}
 
     ngOnInit() {
-
         if ((this.tableLimit > 0) && this.tableOptions.isInternalPagination) {
             this.tableDataService.setLimit(this.tableLimit);
         }
 
         // On data update
-        this.dataChange$ = this.tableDataService.dataChange.subscribe(data => {
-            // Emit new data
-            if (data.type === 'edit') {
-                this.update.emit(data.data);
-            }
-            if (data.type === 'delete') {
-                this.delete.emit(data.data);
-            }
-        });
+        this.dataChange$ = this.tableDataService.dataChange
+            .subscribe(data => this[data.type]
+                .emit(data.data));
 
         // On new data
         this.getData$ = this.tableDataService
             .getData()
-            .subscribe({
-                next: (newData) => {
-                    this.header = newData.header;
-                    this.container = newData.data;
-                    if (this.tableOptions.isInternalPagination) {
-                        this.numOfPages = newData.numberOfPages;
-                        this.currentPage = newData.currentPage;
-                    }
+            .subscribe(newData => {
+                this.header = newData.header;
+                this.container = newData.data;
+                if (this.tableOptions.isInternalPagination) {
+                    this.numOfPages = newData.numberOfPages;
+                    this.currentPage = newData.currentPage;
                 }
             });
 
@@ -123,8 +114,7 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
 
     onNextPage() {
         if (this.tableOptions.isInternalPagination) {
-            const newPage = this.currentPage + 1;
-            this.tableDataService.goToPage(newPage);
+            this.tableDataService.goToPage( this.currentPage + 1);
         } else {
             this.pageChange.emit({
                 direction: PAGINATION.NEXT,
@@ -134,8 +124,7 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
 
     onPreviousPage() {
         if (this.tableOptions.isInternalPagination) {
-            const newPage = this.currentPage - 1;
-            this.tableDataService.goToPage(newPage);
+            this.tableDataService.goToPage(this.currentPage - 1);
         } else {
             this.pageChange.emit({
                 direction: PAGINATION.PREVIOUS,

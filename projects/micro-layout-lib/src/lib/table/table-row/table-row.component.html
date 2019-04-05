@@ -7,13 +7,14 @@
         [isEditing]="isEditing && getColumnIsEditableByKey(key)"
         (onClick)="elementSelected()"
 ></td>
-<td *ngIf="isEditable">
+<td *ngIf="isEditable && !isEditing">
   <button
           class="table-button"
           (click)="edit()"
-          *ngIf="!isEditing"
   >Edit</button>
-  <button class="table-button" (click)="delete()" *ngIf="!isEditing">Delete</button>
+  <button class="table-button" (click)="delete()">Delete</button>
+</td>
+<td *ngIf="isEditing">
   <button class="table-button" (click)="save()" *ngIf="isEditing">Save</button>
   <button class="table-button" (click)="cancel()" *ngIf="isEditing">Cancel</button>
 </td>

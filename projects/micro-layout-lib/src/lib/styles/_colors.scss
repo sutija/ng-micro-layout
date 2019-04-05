@@ -13,5 +13,5 @@ $colorTextDefault: black;
 
 // Message colors
 $colorError: #ffe3d9;
-$colorInfo: #13598130;
-$colorSuccess: #14812E30;
+$colorInfo: unquote('#13598130');
+$colorSuccess: unquote('#14812E30');

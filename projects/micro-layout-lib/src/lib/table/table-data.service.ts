@@ -1,27 +1,25 @@
 import {Injectable} from '@angular/core';
 import {Ng2OrderPipe} from 'ng2-order-pipe';
+import {Subject} from 'rxjs';
 
 import {TableMessagingService} from './table-messaging.service';
-
 import {ArrayToChunksPipe} from '../pipes/array.pipe';
-
 import {
+    DataChange,
     Table,
     TableRow,
     TableSchema
 } from './table.interface';
-import {Subject} from 'rxjs';
 import {TableService} from './table.service';
-import {connectableObservableDescriptor} from 'rxjs/internal/observable/ConnectableObservable';
 
 
 @Injectable()
 export class TableDataService {
-    public readonly dataChange: Subject<any> = new Subject();
+    public readonly dataChange: Subject<DataChange> = new Subject();
     public readonly elementSelected$: Subject<any> = new Subject();
 
     protected tableData: Subject<Table> = new Subject();
-    protected _tableData: Table;
+    protected internalTableData: Table;
     protected schema: TableSchema;
 
     protected orderBy: String;
@@ -29,7 +27,7 @@ export class TableDataService {
     protected limit = 100;
     protected pageNumber = 0;
     private data: Array<Array<TableRow>>;
-    private _data: Array<TableRow>;
+    private internalData: Array<TableRow>;
 
     constructor(private tableMessagingService: TableMessagingService,
                 private tableService: TableService,
@@ -41,7 +39,8 @@ export class TableDataService {
         this.limit = limit;
         this.pageNumber = 0;
         this.data = this.arrayToChunksPipe
-            .transform(this.setColumns(this.schema, this._data), this._getLimit());
+            .transform(this.setColumns(this.schema, this.internalData),
+                this._getLimit());
         this.changeData();
     }
 
@@ -54,12 +53,12 @@ export class TableDataService {
     }
 
     setData(data: Array<TableRow>, schema: TableSchema) {
-        this._data = data.map((item, index) => {
+        this.internalData = data.map((item, index) => {
             item._id = this.generateId(index);
             return item;
         });
         this.data = this.arrayToChunksPipe
-            .transform(this.setColumns(schema, this._data), this._getLimit());
+            .transform(this.setColumns(schema, this.internalData), this._getLimit());
         this.schema = schema;
         this.changeData();
     }
@@ -75,20 +74,20 @@ export class TableDataService {
 
     protected changeData() {
         const data = this.data[this.pageNumber];
-        this._tableData = {
+        this.internalTableData = {
             currentPage: this.pageNumber,
             data,
             header: this.schema,
             numberOfPages: this.data.length,
         };
-        this.tableData.next(this._tableData);
+        this.tableData.next(this.internalTableData);
     }
 
     protected _getLimit() {
         if (this.limit) {
             return this.limit;
         } else {
-            return this._data.length;
+            return this.internalData.length;
         }
     }
 
@@ -107,7 +106,38 @@ export class TableDataService {
         return newRows;
     }
 
-    itemEdit(data) {
+    async itemAdd(data) {
+        const { addCallback } = this.tableService.getOptions();
+        let updated = false;
+
+        if (addCallback) {
+            updated = await addCallback(data);
+        }
+
+        if (addCallback && !updated) {
+            return false;
+        }
+
+        this.internalData.push(data);
+
+        this.dataChange.next({
+            type: 'add',
+            data: data
+        });
+    }
+
+    async itemEdit(data) {
+        const { editCallback } = this.tableService.getOptions();
+        let updated = false;
+
+        if (editCallback) {
+            updated = await editCallback(data);
+        }
+
+        if (editCallback && !updated) {
+            return false;
+        }
+
         this.data = this.data
             .map(item => {
                 if (item['_id'] === data.row._id) {
@@ -124,15 +154,24 @@ export class TableDataService {
 
     async itemDelete(id: number) {
         const { deleteCallback } = this.tableService.getOptions();
+        let result = false;
 
-        const index = this._data
+        const index = this.internalData
             .findIndex(item => item._id === id);
 
-        if (index > -1) {
-            const result = await deleteCallback(this._data[index]);
-            console.log(result);
-            this._data.splice(index, 1);
+        if (index < 0) {
+            return false;
         }
+
+        if (deleteCallback) {
+            result = await deleteCallback(this.internalData[index]);
+        }
+
+        if (deleteCallback && !result) {
+            return false;
+        }
+
+        this.internalData.splice(index, 1);
 
         this.dataChange.next({
             data: id,
@@ -148,7 +187,7 @@ export class TableDataService {
             .transform(this.setColumns(
                 this.schema,
                 this.ng2OrderPipe
-                    .transform(this._data, this.orderBy, this.orderDir)),
+                    .transform(this.internalData, this.orderBy, this.orderDir)),
                 this._getLimit());
 
         this.changeData();

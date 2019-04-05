@@ -1,4 +1,5 @@
-import {Observable} from 'rxjs';
+type TableCallback = (data: TableRow) => Promise<boolean>;
+type DataChangeType = 'add' | 'delete' | 'edit';
 
 export interface Link {
     id?: Number | String;
@@ -76,8 +77,6 @@ export interface TableSchema {
 
 export type editOptions = 'internal' | 'external';
 
-type TableCallback = (data: TableRow) => Promise<boolean>;
-
 export interface TableOptions {
     canAddRows?: boolean;
     canDelete?: boolean;
@@ -97,4 +96,9 @@ export interface TableOptions {
 export interface PagesInfo {
     pageNo: number;
     totalPages: number;
+}
+
+export interface DataChange {
+    type: DataChangeType;
+    data: object | number;
 }
