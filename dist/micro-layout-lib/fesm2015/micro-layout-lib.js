@@ -1,11 +1,12 @@
 import { Router } from '@angular/router';
-import { Subject, of } from 'rxjs';
+import { __awaiter } from 'tslib';
 import { state, style, trigger } from '@angular/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2OrderPipe, Ng2OrderModule } from 'ng2-order-pipe';
 import { FormControl, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Injectable, NgModule, Component, Input, ElementRef, ViewChild, ChangeDetectionStrategy, EventEmitter, Output, Pipe, ComponentFactoryResolver, ViewContainerRef, defineInjectable } from '@angular/core';
+import { Injectable, NgModule, Component, EventEmitter, HostListener, Input, Output, ChangeDetectionStrategy, ViewChild, Pipe, ComponentFactoryResolver, ViewContainerRef, defineInjectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 /**
  * @fileoverview added by tsickle
@@ -57,6 +58,14 @@ class ButtonComponent {
         this.disabled = false;
         this.types = [];
         this.type = 'button';
+        this.title = false;
+        this.clicked = new EventEmitter();
+    }
+    /**
+     * @return {?}
+     */
+    emitClick() {
+        this.clicked.emit(true);
     }
     /**
      * @return {?}
@@ -68,7 +77,7 @@ class ButtonComponent {
 ButtonComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-button',
-                template: "<button [ngClass]=\"getClass()\" [disabled]=\"disabled\" [type]=\"type\">\n    <ng-content></ng-content>\n</button>\n"
+                template: "<button [ngClass]=\"getClass()\" [disabled]=\"disabled\" [type]=\"type\">\n    <ng-content *ngIf=\"!title\"></ng-content>\n    {{ title ? title : null }}\n</button>\n"
             }] }
 ];
 /** @nocollapse */
@@ -76,7 +85,10 @@ ButtonComponent.ctorParameters = () => [];
 ButtonComponent.propDecorators = {
     disabled: [{ type: Input }],
     types: [{ type: Input }],
-    type: [{ type: Input }]
+    type: [{ type: Input }],
+    title: [{ type: Input }],
+    clicked: [{ type: Output }],
+    emitClick: [{ type: HostListener, args: ['click',] }]
 };
 
 /**
@@ -89,6 +101,7 @@ ButtonsModule.decorators = [
     { type: NgModule, args: [{
                 declarations: [ButtonComponent],
                 imports: [
+                    BrowserModule,
                     CommonModule
                 ],
                 exports: [ButtonComponent],
@@ -99,45 +112,155 @@ ButtonsModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class CardComponent {
+class CardService {
     constructor() {
-        this.isColapsed = false;
+        this.isCollapsed = false;
+        this.canCollapse = true;
+        this.isCollapsed$ = new Subject();
+        this.canCollapse$ = new Subject();
+    }
+    /**
+     * @param {?} canCollapse
+     * @return {?}
+     */
+    setCanCollapse(canCollapse) {
+        this.canCollapse = canCollapse;
+        this.canCollapse$.next(this.canCollapse);
+    }
+    /**
+     * @param {?} isCollapsed
+     * @return {?}
+     */
+    setIsCollapsed(isCollapsed) {
+        this.isCollapsed = isCollapsed;
+        this.isCollapsed$.next(this.isCollapsed);
+    }
+    /**
+     * @return {?}
+     */
+    toggleCollapsed() {
+        this.isCollapsed = !this.isCollapsed;
+        this.isCollapsed$.next(this.isCollapsed);
+    }
+}
+CardService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CardService.ctorParameters = () => [];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CardComponent {
+    /**
+     * @param {?} cardService
+     */
+    constructor(cardService) {
+        this.cardService = cardService;
+        this.isCollapsed = false;
+        this.canCollapse = true;
+        this.subscriptions$ = [];
     }
     /**
      * @return {?}
      */
     ngOnInit() {
+        this.cardService.setIsCollapsed(this.isCollapsed);
+        this.cardService.setCanCollapse(this.canCollapse);
+        this.subscriptions$.push(this.cardService.isCollapsed$
+            .subscribe((/**
+         * @param {?} isCollapsed
+         * @return {?}
+         */
+        isCollapsed => this.isCollapsed = isCollapsed)));
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        this.subscriptions$.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.unsubscribe()));
     }
 }
 CardComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-card, [ml-card]',
-                template: "<div ngClass=\"card\">\n  <ng-content select=\"ml-card-header, [ml-card-header]\"></ng-content>\n  <ng-content select=\"ml-card-container, [ml-card-container]\"></ng-content>\n  <ng-content select=\"ml-card-footer, [ml-card-footer]\"></ng-content>\n</div>\n"
+                template: "<div [ngClass]=\"{\n'card': true,\n'card-collapsed': isCollapsed\n}\">\n  <ng-content select=\"ml-card-header, [ml-card-header]\"></ng-content>\n  <ng-content select=\"ml-card-container, [ml-card-container]\"></ng-content>\n  <ng-content select=\"ml-card-footer, [ml-card-footer]\"></ng-content>\n</div>\n",
+                providers: [CardService]
             }] }
 ];
 /** @nocollapse */
-CardComponent.ctorParameters = () => [];
+CardComponent.ctorParameters = () => [
+    { type: CardService }
+];
+CardComponent.propDecorators = {
+    isCollapsed: [{ type: Input }],
+    canCollapse: [{ type: Input }]
+};
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CardHeaderComponent {
-    constructor() { }
+    /**
+     * @param {?} cardService
+     */
+    constructor(cardService) {
+        this.cardService = cardService;
+        this.canCollapse = true;
+        this.isCollapsed = false;
+        this.subscriptions$ = [];
+    }
     /**
      * @return {?}
      */
     ngOnInit() {
+        this.subscriptions$.push(this.cardService.isCollapsed$
+            .subscribe((/**
+         * @param {?} isCollapsed
+         * @return {?}
+         */
+        isCollapsed => this.isCollapsed = isCollapsed)));
+        this.subscriptions$.push(this.cardService.canCollapse$
+            .subscribe((/**
+         * @param {?} canCollapse
+         * @return {?}
+         */
+        canCollapse => this.canCollapse = canCollapse)));
+    }
+    /**
+     * @return {?}
+     */
+    toggleCollapse() {
+        this.cardService.toggleCollapsed();
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        this.subscriptions$.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.unsubscribe()));
     }
 }
 CardHeaderComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-card-header',
-                template: "<div ngClass=\"wrapper\">\n    <ng-content></ng-content>\n</div>\n"
+                template: "<div ngClass=\"wrapper\">\n    <div>\n        <ng-content></ng-content>\n    </div>\n    <div *ngIf=\"canCollapse\" [ngClass]=\"{'toggle-collapse': true, 'collapsed': isCollapsed}\" (click)=\"toggleCollapse()\">{{ isCollapsed ? '+' : '-'}}</div>\n</div>\n"
             }] }
 ];
 /** @nocollapse */
-CardHeaderComponent.ctorParameters = () => [];
+CardHeaderComponent.ctorParameters = () => [
+    { type: CardService }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -165,21 +288,45 @@ CardFooterComponent.ctorParameters = () => [];
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CardContainerComponent {
-    constructor() { }
+    /**
+     * @param {?} cardService
+     */
+    constructor(cardService) {
+        this.cardService = cardService;
+        this.subscriptions$ = [];
+    }
     /**
      * @return {?}
      */
     ngOnInit() {
+        this.subscriptions$.push(this.cardService.isCollapsed$
+            .subscribe((/**
+         * @param {?} isCollapsed
+         * @return {?}
+         */
+        isCollapsed => this.isCollapsed = isCollapsed)));
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        this.subscriptions$.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.unsubscribe()));
     }
 }
 CardContainerComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-card-container',
-                template: "<div ngClass=\"wrapper\">\n    <ng-content></ng-content>\n</div>\n"
+                template: "<div [ngClass]=\"{'wrapper': true, 'collapsed': isCollapsed}\">\n    <ng-content></ng-content>\n</div>\n"
             }] }
 ];
 /** @nocollapse */
-CardContainerComponent.ctorParameters = () => [];
+CardContainerComponent.ctorParameters = () => [
+    { type: CardService }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -214,13 +361,18 @@ class LinkComponent {
      * @return {?}
      */
     onClick() {
-        this.router.navigateByUrl(this.target);
+        if (this.type === 'internal') {
+            this.router.navigateByUrl(this.target);
+        }
+        else {
+            window.location.href = this.target;
+        }
     }
 }
 LinkComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-link',
-                template: "<button ngClass=\"link\" type=\"button\" (click)=\"onClick()\">{{title}}</button>\n",
+                template: "<a ngClass=\"link\" (click)=\"onClick()\">{{title}}</a>\n",
                 styles: [".link{background:0 0;border:none;cursor:pointer}.link:hover{text-decoration:underline}"]
             }] }
 ];
@@ -230,7 +382,8 @@ LinkComponent.ctorParameters = () => [
 ];
 LinkComponent.propDecorators = {
     title: [{ type: Input }],
-    target: [{ type: Input }]
+    target: [{ type: Input }],
+    type: [{ type: Input }]
 };
 
 /**
@@ -254,7 +407,9 @@ LinkModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProgressComponent {
-    constructor() { }
+    constructor() {
+        this.progressPercent = 0;
+    }
     /**
      * @return {?}
      */
@@ -264,12 +419,15 @@ class ProgressComponent {
 ProgressComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-progress',
-                template: "<progress></progress>\n",
-                styles: [""]
+                template: "<div class=\"progress-container\">\n    <div class=\"progress\" [ngStyle]=\"{width: progressPercent + '%'}\">\n        <span class=\"progress-text\">{{progressText ? progressText : null}}</span>\n    </div>\n</div>\n"
             }] }
 ];
 /** @nocollapse */
 ProgressComponent.ctorParameters = () => [];
+ProgressComponent.propDecorators = {
+    progressPercent: [{ type: Input }],
+    progressText: [{ type: Input }]
+};
 
 /**
  * @fileoverview added by tsickle
@@ -292,43 +450,30 @@ ProgressModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const MESSAGES = {
-    ITEM_ADD: 'ITEM_ADD',
-    ITEM_EDIT: 'ITEM_EDIT',
-    ITEM_EDIT_STARTED: 'ITEM_EDIT_STARTED',
-    ITEM_DELETE: 'ITEM_DELETE',
-    ITEM_DELETE_CANCELED: 'ITEM_DELETE_CANCELED',
-    SORT_CLICK: 'SORT_CLICK',
-    MULTIPLE_DELETE: 'MULTIPLE_DELETE',
-};
-/** @type {?} */
-const CONTEXTS = {
-    DEFAULT: 'DEFAUL',
-};
-/** @type {?} */
 const TABLE_COLUMN_TYPES = {
-    STRING: 'STRING',
-    NUMBER: 'NUMBER',
-    TEXTAREA: 'TEXTAREA',
-    SWITCH: 'SWITCH',
-    DROP: 'DROP',
-    COMPONENT: 'COMPONENT',
-    DATE: 'DATE'
+    string: 'string',
+    number: 'number',
+    textarea: 'textarea',
+    switch: 'switch',
+    drop: 'drop',
+    component: 'component',
+    date: 'date'
 };
 /** @type {?} */
 const DEFAULT_TABLE_OPTIONS = {
     canAddRows: false,
     canDelete: false,
-    editOption: 'INTERNAL',
+    editOption: 'internal',
     isEditable: false,
-    isReordable: false,
+    isDraggable: false,
     isSortable: false,
+    numberOfItems: [50, 100, 200],
     schema: {}
 };
 /** @type {?} */
 const PAGINATION = {
-    PREVIOUS: 'PREVIOUS',
-    NEXT: 'NEXT'
+    previous: 'previous',
+    next: 'next',
 };
 
 /**
@@ -344,7 +489,6 @@ class TableColumnComponent {
         this.dataValue = false;
         this.subscriptions$ = [];
         this.dataChange = new EventEmitter();
-        this.clicked = new EventEmitter();
         this.isEditing = false;
         this.isEditable = true;
         this.tableColumnTypes = TABLE_COLUMN_TYPES;
@@ -375,12 +519,6 @@ class TableColumnComponent {
     /**
      * @return {?}
      */
-    onElementClick() {
-        this.clicked.emit(true);
-    }
-    /**
-     * @return {?}
-     */
     handleData() {
         if (this.dataValue instanceof Array) {
             this.dataValue.forEach((/**
@@ -398,7 +536,7 @@ class TableColumnComponent {
      * @return {?}
      */
     render(component) {
-        if (component && this.columnType === TABLE_COLUMN_TYPES.COMPONENT) {
+        if (component && this.columnType === TABLE_COLUMN_TYPES.component) {
             this.componentRef =
                 this.columnComponent.createComponent(this.compiler.resolveComponentFactory(component.component));
             // Set component params
@@ -408,15 +546,17 @@ class TableColumnComponent {
              */
             param => {
                 if (param.value instanceof Function) {
-                    // Subscribe to event
-                    this.subscriptions$.push(this.componentRef.instance[param.name]
-                        .subscribe((/**
-                     * @param {?} e
-                     * @return {?}
-                     */
-                    e => {
-                        param.value(e);
-                    })));
+                    if (this.componentRef.instance[param.name]) {
+                        // Subscribe to event
+                        this.subscriptions$.push(this.componentRef.instance[param.name]
+                            .subscribe((/**
+                         * @param {?} e
+                         * @return {?}
+                         */
+                        e => {
+                            param.value(e);
+                        })));
+                    }
                 }
                 else {
                     // Set param
@@ -439,7 +579,7 @@ class TableColumnComponent {
 TableColumnComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-table-column, [ml-table-column]',
-                template: "<div\n    id=\"{{data.id}}\"\n    *ngIf=\"data !== null && !isEditing && (columnType !== tableColumnTypes.COMPONENT)\"\n    ngClass=\"column\"\n>\n    <span (click)=\"onElementClick()\">{{data}}</span>\n</div>\n<div #columnComponent class=\"COMPONENT\"></div>\n<div\n        id=\"{{ data.id }}\"\n        [ngSwitch]=\"columnType\"\n        *ngIf=\"data !== null && isEditing && isEditable\"\n        class=\"Table__Column Form__Item\"\n>\n    <textarea *ngSwitchCase=\"tableColumnTypes.TEXTAREA\" [(ngModel)]=\"data\"></textarea>\n    <ml-switch *ngSwitchCase=\"tableColumnTypes.SWITCH\" [(ngModel)]=\"data\"></ml-switch>\n    <input *ngSwitchDefault type=\"text\" [(ngModel)]=\"data\"/>\n</div>\n<div class=\"Table__Column Table__Column--empty\" *ngIf=\"data === null && !isEditing\">/</div>\n"
+                template: "<div\n    *ngIf=\"data !== null && !isEditing && (columnType !== tableColumnTypes.component)\"\n    class=\"column\"\n>\n    <span>{{data}}</span>\n</div>\n<div #columnComponent class=\"component\"></div>\n<div\n        [ngSwitch]=\"columnType\"\n        *ngIf=\"data !== null && isEditing && isEditable\"\n        class=\"column table-form-element\"\n>\n    <textarea *ngSwitchCase=\"tableColumnTypes.textarea\" [(ngModel)]=\"data\"></textarea>\n    <ml-switch *ngSwitchCase=\"tableColumnTypes.switch\" [(ngModel)]=\"data\"></ml-switch>\n    <input *ngSwitchDefault type=\"text\" [(ngModel)]=\"data\"/>\n</div>\n<div class=\"column column-empty\" *ngIf=\"data === null && !isEditing\">/</div>\n"
             }] }
 ];
 /** @nocollapse */
@@ -449,7 +589,6 @@ TableColumnComponent.ctorParameters = () => [
 TableColumnComponent.propDecorators = {
     data: [{ type: Input }],
     dataChange: [{ type: Output }],
-    clicked: [{ type: Output }],
     isEditing: [{ type: Input }],
     isEditable: [{ type: Input }],
     columnType: [{ type: Input }],
@@ -463,7 +602,6 @@ TableColumnComponent.propDecorators = {
 class TableContainerComponent {
     constructor() {
         this.isEditable = false;
-        console.log(this.data);
     }
     /**
      * @param {?} data
@@ -471,7 +609,7 @@ class TableContainerComponent {
      */
     getClass(data) {
         if (data._options && data._options._backgroundColor) {
-            return 'row ' + data._options._backgroundColor;
+            return `row ${data._options._backgroundColor}`;
         }
         else {
             return 'row';
@@ -487,136 +625,6 @@ TableContainerComponent.decorators = [
 /** @nocollapse */
 TableContainerComponent.ctorParameters = () => [];
 TableContainerComponent.propDecorators = {
-    data: [{ type: Input }],
-    isEditable: [{ type: Input }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TableFooterComponent {
-    constructor() { }
-    /**
-     * @return {?}
-     */
-    ngOnInit() {
-    }
-}
-TableFooterComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'ml-table-footer',
-                template: "<p>\n  table-footer works!\n</p>\n"
-            }] }
-];
-/** @nocollapse */
-TableFooterComponent.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class InfoService {
-    constructor() {
-        this.message = new EventEmitter();
-        this.messageTypes = {
-            info: 'info',
-            error: 'error',
-            warning: 'warning',
-            success: 'success'
-        };
-    }
-    /**
-     * @param {?} message
-     * @return {?}
-     */
-    notify(message) {
-        this.message.emit(message);
-    }
-}
-InfoService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-InfoService.ctorParameters = () => [];
-/** @type {?} */
-const MessageResolver = (/**
- * @param {?} callbacks
- * @param {?} message
- * @return {?}
- */
-(callbacks, message) => {
-    callbacks.filter((/**
-     * @param {?} callback
-     * @return {?}
-     */
-    callback => callback.type === message.type &&
-        callback.message === message.message)).every((/**
-     * @param {?} item
-     * @return {?}
-     */
-    item => item.callback(message.data)));
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TableMessagingService extends InfoService {
-}
-TableMessagingService.decorators = [
-    { type: Injectable }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TableHeaderComponent {
-    /**
-     * @param {?} tableMessagingService
-     */
-    constructor(tableMessagingService) {
-        this.tableMessagingService = tableMessagingService;
-        this.data = {};
-        this.isEditable = false;
-    }
-    /**
-     * @return {?}
-     */
-    getData() {
-        if (this.data) {
-            return Object.keys(this.data) || [];
-        }
-        else {
-            return [];
-        }
-    }
-    /**
-     * @param {?} label
-     * @return {?}
-     */
-    sortItems(label) {
-        this.tableMessagingService.notify({
-            data: {
-                sort_by: label
-            },
-            message: MESSAGES.SORT_CLICK,
-            type: CONTEXTS.DEFAULT
-        });
-    }
-}
-TableHeaderComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'ml-table-header, [ml-table-header]',
-                template: "<tr ngClass=\"header-row\">\n  <th\n          [hidden]=\"columnName === '_id'\"\n          *ngFor=\"let columnName of getData(); let i = index;\" ngClass=\"column\">\n    <button\n            (click)=\"sortItems(columnName)\"\n            class=\"Table__OrderButton\"\n            title=\"Click to reorder\"\n    >{{data[columnName].title}}\n    </button>\n  </th>\n  <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
-            }] }
-];
-/** @nocollapse */
-TableHeaderComponent.ctorParameters = () => [
-    { type: TableMessagingService }
-];
-TableHeaderComponent.propDecorators = {
     data: [{ type: Input }],
     isEditable: [{ type: Input }]
 };
@@ -661,96 +669,48 @@ ArrayToChunksPipe.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class TableService {
+    constructor() { }
+    /**
+     * @param {?} options
+     * @return {?}
+     */
+    setOptions(options) {
+        this.tableOptions = options;
+    }
+    /**
+     * @return {?}
+     */
+    getOptions() {
+        return this.tableOptions;
+    }
+}
+TableService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+TableService.ctorParameters = () => [];
+
 /**
- * \@todo Create
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class TableDataService {
     /**
-     * @param {?} tableMessagingService
+     * @param {?} tableService
      * @param {?} arrayToChunksPipe
      * @param {?} ng2OrderPipe
      */
-    constructor(tableMessagingService, arrayToChunksPipe, ng2OrderPipe) {
-        this.tableMessagingService = tableMessagingService;
+    constructor(tableService, arrayToChunksPipe, ng2OrderPipe) {
+        this.tableService = tableService;
         this.arrayToChunksPipe = arrayToChunksPipe;
         this.ng2OrderPipe = ng2OrderPipe;
-        this.dataChange = new Subject();
+        this.dataChange$ = new Subject();
         this.elementSelected$ = new Subject();
         this.tableData = new Subject();
-        this.tableId = 'table';
-        this.callbacks = [
-            {
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.ITEM_EDIT_STARTED,
-                callback: (/**
-                 * @return {?}
-                 */
-                () => {
-                    console.log('item edit started');
-                })
-            },
-            // On sort
-            {
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.SORT_CLICK,
-                callback: (/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    this.reorder(data.sort_by);
-                })
-            },
-            // On edit
-            {
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.ITEM_EDIT,
-                callback: (/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => this.itemEdit(data))
-            },
-            // On add
-            {
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.ITEM_ADD,
-                callback: null
-            },
-            // On delete
-            {
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.ITEM_DELETE,
-                callback: (/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    if (confirm(`Delete ${data.id}?`)) {
-                        this.itemDelete(data.id);
-                    }
-                })
-            },
-        ];
         this.orderDir = false;
-        this.limit = null;
-        this.pageNumber = 0;
         this.limit = 100;
-        this.tableMessagingService
-            .message
-            .subscribe((/**
-         * @param {?} message
-         * @return {?}
-         */
-        (message) => MessageResolver(this.callbacks, message)));
-    }
-    /**
-     * @param {?} tableId
-     * @return {?}
-     */
-    setTableId(tableId) {
-        console.log('table id', tableId);
-        return this.tableId;
+        this.pageNumber = 0;
     }
     /**
      * @param {?} limit
@@ -759,16 +719,9 @@ class TableDataService {
     setLimit(limit) {
         this.limit = limit;
         this.pageNumber = 0;
-        this.data = null;
         this.data = this.arrayToChunksPipe
-            .transform(this.setColumns(this.schema, this._data), this._getLimit());
+            .transform(this.setColumns(this.schema, this.internalData), this._getLimit());
         this.changeData();
-    }
-    /**
-     * @return {?}
-     */
-    getLimit() {
-        return this.limit;
     }
     /**
      * @return {?}
@@ -777,10 +730,11 @@ class TableDataService {
         return this.schema;
     }
     /**
+     * @param {?} index
      * @return {?}
      */
-    getRows() {
-        return this.data;
+    generateId(index) {
+        return Math.round((new Date()).getTime() / 1000) + index;
     }
     /**
      * @param {?} data
@@ -788,8 +742,23 @@ class TableDataService {
      * @return {?}
      */
     setData(data, schema) {
-        this._data = data;
-        this.data = this.arrayToChunksPipe.transform(this.setColumns(schema, this._data), this._getLimit());
+        // Generate row _id
+        if (data[0] && !data[0]._id) {
+            this.internalData = data.map((/**
+             * @param {?} item
+             * @param {?} index
+             * @return {?}
+             */
+            (item, index) => {
+                item._id = this.generateId(index);
+                return item;
+            }));
+        }
+        else {
+            this.internalData = data;
+        }
+        this.data = this.arrayToChunksPipe
+            .transform(this.setColumns(schema, this.internalData), this._getLimit());
         this.schema = schema;
         this.changeData();
     }
@@ -808,26 +777,19 @@ class TableDataService {
         this.changeData();
     }
     /**
-     * @return {?}
-     */
-    getNumberOfPages() {
-        return this.data.length;
-    }
-    /**
      * @protected
      * @return {?}
      */
     changeData() {
         /** @type {?} */
         const data = this.data[this.pageNumber];
-        this._tableData = {
+        this.internalTableData = {
             currentPage: this.pageNumber,
             data,
             header: this.schema,
             numberOfPages: this.data.length,
         };
-        console.log('table id', this.tableId);
-        this.tableData.next(this._tableData);
+        this.tableData.next(this.internalTableData);
     }
     /**
      * @protected
@@ -838,7 +800,7 @@ class TableDataService {
             return this.limit;
         }
         else {
-            return this._data.length;
+            return this.internalData.length;
         }
     }
     /**
@@ -875,61 +837,74 @@ class TableDataService {
         return newRows;
     }
     /**
-     * @protected
+     * @param {?} data
+     * @return {?}
+     */
+    itemAdd(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.internalData.push(data);
+            this.dataChange$.next({
+                type: 'add',
+                data: data
+            });
+        });
+    }
+    /**
      * @param {?} data
      * @return {?}
      */
     itemEdit(data) {
-        this.data = this.data.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        item => {
-            if (item['_id'] === data.row._id) {
-                return data.row;
-            }
-            return item;
-        }));
-        this.dataChange.next({
-            type: 'edit',
-            data: data.row
+        return __awaiter(this, void 0, void 0, function* () {
+            this.internalData = this.internalData
+                .map((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                if (item._id === data._id) {
+                    return data;
+                }
+                return item;
+            }));
+            this.dataChange$.next({
+                type: 'edit',
+                data: data
+            });
         });
     }
     /**
-     * @protected
      * @param {?} id
      * @return {?}
      */
     itemDelete(id) {
-        this.dataChange.next({
-            type: 'delete',
-            data: id
+        return __awaiter(this, void 0, void 0, function* () {
+            /** @type {?} */
+            const index = this.internalData
+                .findIndex((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => item._id === id));
+            if (index < 0) {
+                return false;
+            }
+            this.internalData.splice(index, 1);
+            this.dataChange$.next({
+                data: id,
+                type: 'delete'
+            });
         });
     }
     /**
-     * @protected
-     * @param {?} item
-     * @return {?}
-     */
-    resolveItemPagePosition(item) {
-    }
-    /**
-     * @protected
      * @param {?} orderBy
      * @return {?}
      */
     reorder(orderBy) {
-        if (this.orderBy === orderBy) {
-            this.orderDir = !this.orderDir;
-        }
-        else {
-            this.orderBy = orderBy;
-        }
+        this.orderBy === orderBy ? this.orderDir = !this.orderDir : this.orderBy = orderBy;
         this.pageNumber = 0;
-        this.data = null;
         this.data = this.arrayToChunksPipe
             .transform(this.setColumns(this.schema, this.ng2OrderPipe
-            .transform(this._data, this.orderBy, this.orderDir)), this._getLimit());
+            .transform(this.internalData, this.orderBy, this.orderDir)), this._getLimit());
         this.changeData();
     }
 }
@@ -938,7 +913,7 @@ TableDataService.decorators = [
 ];
 /** @nocollapse */
 TableDataService.ctorParameters = () => [
-    { type: TableMessagingService },
+    { type: TableService },
     { type: ArrayToChunksPipe },
     { type: Ng2OrderPipe }
 ];
@@ -949,24 +924,19 @@ TableDataService.ctorParameters = () => [
  */
 class TableRowComponent {
     /**
-     * @param {?} tableMessagingService
      * @param {?} tableDataService
      */
-    constructor(tableMessagingService, tableDataService) {
-        this.tableMessagingService = tableMessagingService;
+    constructor(tableDataService) {
         this.tableDataService = tableDataService;
         this.isEditable = false;
         this.isEditing = false;
-        this.deleteActivated = false;
         this.select = new EventEmitter();
+        this.deleteActivated = false;
     }
     /**
      * @return {?}
      */
     ngOnChanges() {
-        /**
-         * Clone global data to local data
-         */
         this._data = Object.assign({}, this.data);
     }
     /**
@@ -1007,13 +977,6 @@ class TableRowComponent {
         return this.tableDataService.getHeaders()[key].isEditable;
     }
     /**
-     * @param {?} key
-     * @return {?}
-     */
-    getDataByKey(key) {
-        return this.data[key];
-    }
-    /**
      * @return {?}
      */
     cancel() {
@@ -1025,23 +988,19 @@ class TableRowComponent {
      */
     edit() {
         this.isEditing = !this.isEditing;
-        if (this.isEditing) {
-            this.tableMessagingService.notify({
-                type: CONTEXTS.DEFAULT,
-                message: MESSAGES.ITEM_EDIT_STARTED
-            });
-        }
     }
     /**
+     * @param {?} type
      * @return {?}
      */
-    save() {
-        this.isEditing = false;
-        this.tableMessagingService.notify({
-            type: CONTEXTS.DEFAULT,
-            message: MESSAGES.ITEM_EDIT,
-            data: {
-                row: this._data
+    save(type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.isEditing = false;
+            if (type === 'add') {
+                yield this.tableDataService.itemAdd(this.data);
+            }
+            else {
+                yield this.tableDataService.itemEdit(this._data);
             }
         });
     }
@@ -1049,59 +1008,28 @@ class TableRowComponent {
      * @return {?}
      */
     delete() {
-        this.deleteActivated = !this.deleteActivated;
-        this.tableMessagingService.notify({
-            type: CONTEXTS.DEFAULT,
-            message: MESSAGES.ITEM_DELETE,
-            data: this._data
-        });
+        this.deleteActivated = true;
+        if (confirm(`Delete "${this.data.title}"?`)) {
+            this.tableDataService.itemDelete(this.data._id);
+        }
     }
 }
 TableRowComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-table-row, [ml-table-row]',
-                template: "<td\n        ml-table-column\n        [hidden]=\"key === '_id'\"\n        *ngFor=\"let key of getColumnsData(); trackBy: trackColumn\"\n        [(data)]=\"_data[key]\"\n        [columnType]=\"getColumnTypeByKey(key)\"\n        [isEditing]=\"isEditing && getColumnIsEditableByKey(key)\"\n        (onClick)=\"elementSelected()\"\n></td>\n<td *ngIf=\"isEditable\">\n  <button\n          class=\"Button Button--small Button--primary\"\n          (click)=\"edit()\"\n          *ngIf=\"!isEditing\"\n  >Edit</button>\n  <button class=\"Button Button--small\" (click)=\"delete()\" *ngIf=\"!isEditing\">Delete</button>\n  <button class=\"Button Button--small Button--primary\" (click)=\"save()\" *ngIf=\"isEditing\">Save</button>\n  <button class=\"Button Button--small\" (click)=\"cancel()\" *ngIf=\"isEditing\">Cancel</button>\n</td>\n"
+                template: "<td\n        ml-table-column\n        [hidden]=\"key === '_id'\"\n        *ngFor=\"let key of getColumnsData(); trackBy: trackColumn\"\n        [(data)]=\"_data[key]\"\n        [columnType]=\"getColumnTypeByKey(key)\"\n        [isEditing]=\"isEditing && getColumnIsEditableByKey(key)\"\n        (click)=\"elementSelected()\"\n></td>\n<td *ngIf=\"isEditable && !isEditing\">\n  <button\n          class=\"table-button\"\n          (click)=\"edit()\"\n  >Edit</button>\n  <button class=\"table-button\" (click)=\"delete()\">Delete</button>\n</td>\n<td *ngIf=\"isEditing\">\n  <button class=\"table-button\" (click)=\"save('edit')\" *ngIf=\"isEditing\">Save</button>\n  <button class=\"table-button\" (click)=\"cancel()\" *ngIf=\"isEditing\">Cancel</button>\n</td>\n"
             }] }
 ];
 /** @nocollapse */
 TableRowComponent.ctorParameters = () => [
-    { type: TableMessagingService },
     { type: TableDataService }
 ];
 TableRowComponent.propDecorators = {
     data: [{ type: Input }],
     isEditable: [{ type: Input }],
     isEditing: [{ type: Input }],
-    deleteActivated: [{ type: Input }],
     select: [{ type: Output }]
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TableService {
-    constructor() {
-        this._tableOptions = {};
-    }
-    /**
-     * @param {?} tableID
-     * @param {?} tableOptions
-     * @return {?}
-     */
-    setTableOptions(tableID, tableOptions) {
-        this._tableOptions[tableID] = Object.assign({}, tableOptions);
-    }
-    /**
-     * @return {?}
-     */
-    getTableOptions() {
-        return of(this._tableOptions);
-    }
-}
-TableService.decorators = [
-    { type: Injectable }
-];
 
 /**
  * @fileoverview added by tsickle
@@ -1111,15 +1039,14 @@ class TableComponent {
     /**
      * @param {?} tableDataService
      * @param {?} tableService
-     * @param {?} el
      */
-    constructor(tableDataService, tableService, el) {
+    constructor(tableDataService, tableService) {
         this.tableDataService = tableDataService;
         this.tableService = tableService;
-        this.el = el;
         this.tableID = 'default';
         // Only if we have external page handler
-        this.update = new EventEmitter();
+        this.add = new EventEmitter();
+        this.edit = new EventEmitter();
         this.delete = new EventEmitter();
         this.pageChange = new EventEmitter();
         this.numberOfItemsChange = new EventEmitter();
@@ -1129,45 +1056,36 @@ class TableComponent {
      * @return {?}
      */
     ngOnInit() {
-        this.tableDataService.setTableId(this.tableID);
         if ((this.tableLimit > 0) && this.tableOptions.isInternalPagination) {
             this.tableDataService.setLimit(this.tableLimit);
         }
         // On data update
-        this.dataChange$ = this.tableDataService.dataChange.subscribe((/**
+        this.dataChange$ = this.tableDataService.dataChange$
+            .subscribe((/**
          * @param {?} data
          * @return {?}
          */
-        data => {
-            // Emit new data
-            if (data.type === 'edit') {
-                this.update.emit(data.data);
-            }
-            if (data.type === 'delete') {
-                this.delete.emit(data.data);
-            }
-        }));
+        data => this[data.type].emit(data.data)));
         // On new data
         this.getData$ = this.tableDataService
             .getData()
-            .subscribe({
-            next: (/**
-             * @param {?} newData
-             * @return {?}
-             */
-            (newData) => {
-                this.header = newData.header;
-                this.container = newData.data;
-                if (this.tableOptions.isInternalPagination) {
-                    this.numOfPages = newData.numberOfPages;
-                    this.currentPage = newData.currentPage;
-                }
-            })
-        });
+            .subscribe((/**
+         * @param {?} newData
+         * @return {?}
+         */
+        newData => {
+            this.header = newData.header;
+            this.container = newData.data;
+            if (this.tableOptions.isInternalPagination) {
+                this.numOfPages = newData.numberOfPages;
+                this.currentPage = newData.currentPage;
+            }
+        }));
         if (!this.tableOptions.isInternalPagination) {
             this.currentPage = 0;
         }
         this.tableDataService.setData(this.data, this.tableOptions.schema);
+        this.tableDataService.setLimit(this.tableOptions.numberOfItems[0]);
     }
     /**
      * @param {?} changes
@@ -1175,8 +1093,8 @@ class TableComponent {
      */
     ngOnChanges(changes) {
         if (changes.tableOptions) {
-            this.tableService.setTableOptions(this.tableID, this.tableOptions);
             this.tableOptions = Object.assign({}, DEFAULT_TABLE_OPTIONS, this.tableOptions);
+            this.tableService.setOptions(this.tableOptions);
         }
         if (changes.data) {
             this.tableDataService.setData(this.data, this.tableOptions.schema);
@@ -1188,7 +1106,6 @@ class TableComponent {
             this.currentPage = this.pageNumber;
         }
         if (changes.tableLimit) {
-            console.log('table limit', changes.tableLimit);
             this.tableDataService.setLimit(changes.tableLimit.currentValue);
         }
     }
@@ -1203,22 +1120,20 @@ class TableComponent {
      * @return {?}
      */
     onChangeNumberOfItems(numOfItems) {
-        this.tableLimit = numOfItems;
+        this.tableLimit = parseInt(numOfItems, 10);
         this.tableDataService.setLimit(this.tableLimit);
-        this.numberOfItemsChange.emit(numOfItems);
+        this.numberOfItemsChange.emit(this.tableLimit);
     }
     /**
      * @return {?}
      */
     onNextPage() {
         if (this.tableOptions.isInternalPagination) {
-            /** @type {?} */
-            const newPage = this.currentPage + 1;
-            this.tableDataService.goToPage(newPage);
+            this.tableDataService.goToPage(this.currentPage + 1);
         }
         else {
             this.pageChange.emit({
-                direction: PAGINATION.NEXT,
+                direction: PAGINATION.next,
             });
         }
     }
@@ -1227,13 +1142,11 @@ class TableComponent {
      */
     onPreviousPage() {
         if (this.tableOptions.isInternalPagination) {
-            /** @type {?} */
-            const newPage = this.currentPage - 1;
-            this.tableDataService.goToPage(newPage);
+            this.tableDataService.goToPage(this.currentPage - 1);
         }
         else {
             this.pageChange.emit({
-                direction: PAGINATION.PREVIOUS,
+                direction: PAGINATION.previous,
             });
         }
     }
@@ -1248,16 +1161,15 @@ class TableComponent {
 TableComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-table, [ml-table]',
-                template: "<div ngClass=\"wrapper\">\n  <table\n          [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n  >\n    <thead ml-table-header [data]=\"header\" ngClass=\"header\" [isEditable]=\"tableOptions.isEditable\"></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isReordable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody ml-table-container *ngIf=\"!tableOptions.isReordable\" [isEditable]=\"tableOptions.isEditable\" [data]=\"container\" class=\"Table__Container\"></tbody>\n  </table>\n</div>\n<div ngClass=\"table-navigation\">\n  <button [disabled]=\"isLoading\" ngClass=\"button\" (click)=\"onPreviousPage()\" *ngIf=\"currentPage > 0\">Previous page</button>\n  <span ngClass=\"page-information\">{{ getCurrentPage() }} / {{ numOfPages }}</span>\n  <button [disabled]=\"isLoading\" ngClass=\"button\" (click)=\"onNextPage()\" *ngIf=\"currentPage < numOfPages - 1\">Next page</button>\n</div>\n<div *ngIf=\"tableOptions.canChangeNumberOfItems\">\n  <div class=\"form-Item\">\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n      <option value=\"50\">50</option>\n      <option value=\"100\">100</option>\n      <option value=\"200\">200</option>\n    </select>\n  </div>\n</div>\n",
+                template: "<table\n        [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n>\n    <thead\n            ml-table-header\n            [data]=\"header\"\n            class=\"header\"\n            [isEditable]=\"tableOptions.isEditable\"\n    ></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isDraggable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody\n            ml-table-container\n            class=\"table-container\"\n            *ngIf=\"!tableOptions.isDraggable\"\n            [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n    ></tbody>\n</table>\n<div class=\"table-navigation\">\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onPreviousPage()\"\n            *ngIf=\"currentPage > 0\"\n    >\n        Previous page\n    </button>\n    <span class=\"page-information\">\n        {{ getCurrentPage() }} / {{ numOfPages }}\n    </span>\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onNextPage()\"\n            *ngIf=\"currentPage < numOfPages - 1\"\n    >\n        Next page\n    </button>\n</div>\n<div\n        class=\"number-of-items\"\n        *ngIf=\"tableOptions.canChangeNumberOfItems\"\n>\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n        <option\n                *ngFor=\"let value of tableOptions.numberOfItems\"\n                [value]=\"value\"\n        >{{value}}</option>\n    </select>\n</div>\n",
                 changeDetection: ChangeDetectionStrategy.OnPush,
-                providers: [TableDataService, TableService, TableMessagingService]
+                providers: [TableDataService, TableService]
             }] }
 ];
 /** @nocollapse */
 TableComponent.ctorParameters = () => [
     { type: TableDataService },
-    { type: TableService },
-    { type: ElementRef }
+    { type: TableService }
 ];
 TableComponent.propDecorators = {
     tableID: [{ type: Input }],
@@ -1266,7 +1178,8 @@ TableComponent.propDecorators = {
     tableLimit: [{ type: Input }],
     numberOfPages: [{ type: Input }],
     pageNumber: [{ type: Input }],
-    update: [{ type: Output }],
+    add: [{ type: Output }],
+    edit: [{ type: Output }],
     delete: [{ type: Output }],
     pageChange: [{ type: Output }],
     numberOfItemsChange: [{ type: Output }],
@@ -1655,7 +1568,8 @@ class DropItemsComponent {
 DropItemsComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ml-drop-items, [ml-drop-items]',
-                template: "<ul *ngIf=\"isOpened\" ngClass=\"drop-items\">\n    <li *ngFor=\"let item of getItems(); let i = index;\" ngClass=\"drop-item\">\n\n        <button\n                ngClass=\"button-toggle\"\n                *ngIf=\"hasChildren(item.id)\"\n                (click)=\"toggleChildren(i)\"\n        >{{childrenVisible[i] ? '-' : '+'}}</button>\n\n        <span (click)=\"selectItem(item)\" ngClass=\"title {{!hasChildren(item.id) ? 'no-children' : null}}\">{{item.title}}</span>\n        <ml-drop-items\n                [parentId]=\"item.id\"\n                [isOpened]=\"childrenVisible[i]\"\n                ngClass=\"drop-items-children\"\n        ></ml-drop-items>\n    </li>\n</ul>\n"
+                template: "<ul *ngIf=\"isOpened\" ngClass=\"drop-items\">\n    <li *ngFor=\"let item of getItems(); let i = index;\" ngClass=\"drop-item\">\n\n        <button\n                ngClass=\"button-toggle\"\n                *ngIf=\"hasChildren(item.id)\"\n                (click)=\"toggleChildren(i)\"\n        >{{childrenVisible[i] ? '-' : '+'}}</button>\n\n        <span (click)=\"selectItem(item)\" ngClass=\"title {{!hasChildren(item.id) ? 'no-children' : null}}\">{{item.title}}</span>\n        <ml-drop-items\n                [parentId]=\"item.id\"\n                [isOpened]=\"childrenVisible[i]\"\n                ngClass=\"drop-items-children\"\n        ></ml-drop-items>\n    </li>\n</ul>\n",
+                providers: []
             }] }
 ];
 /** @nocollapse */
@@ -1671,7 +1585,7 @@ DropItemsComponent.propDecorators = {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class AliasComponent extends FormControl {
+class SlugComponent extends FormControl {
     constructor() {
         super();
     }
@@ -1704,19 +1618,19 @@ class AliasComponent extends FormControl {
      * @return {?}
      */
     registerOnTouched(fn) {
-        this.onTouch = fn;
+        this.onTouched = fn;
     }
 }
-AliasComponent.decorators = [
+SlugComponent.decorators = [
     { type: Component, args: [{
-                selector: 'ml-alias',
-                template: "<input type=\"text\" #element (keyup)=\"update()\" (focus)=\"onTouch(true)\" [value]=\"value\" />\n",
-                providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: AliasComponent, multi: true }]
+                selector: 'ml-slug',
+                template: "<input type=\"text\" #element (keyup)=\"update()\" [value]=\"value\" />\n",
+                providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: SlugComponent, multi: true }]
             }] }
 ];
 /** @nocollapse */
-AliasComponent.ctorParameters = () => [];
-AliasComponent.propDecorators = {
+SlugComponent.ctorParameters = () => [];
+SlugComponent.propDecorators = {
     value: [{ type: Input }],
     element: [{ type: ViewChild, args: ['element',] }]
 };
@@ -1828,7 +1742,7 @@ FormModule.decorators = [
                     SwitchComponent,
                     DropComponent,
                     DropItemsComponent,
-                    AliasComponent,
+                    SlugComponent,
                     PartsComponent
                 ],
                 imports: [
@@ -1838,7 +1752,7 @@ FormModule.decorators = [
                     BrowserModule
                 ],
                 exports: [
-                    AliasComponent,
+                    SlugComponent,
                     SwitchComponent,
                     PartsComponent,
                     DropComponent,
@@ -1851,6 +1765,53 @@ FormModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class TableHeaderComponent {
+    /**
+     * @param {?} tableDataService
+     */
+    constructor(tableDataService) {
+        this.tableDataService = tableDataService;
+        this.data = {};
+        this.isEditable = false;
+    }
+    /**
+     * @return {?}
+     */
+    getData() {
+        if (this.data) {
+            return Object.keys(this.data) || [];
+        }
+        else {
+            return [];
+        }
+    }
+    /**
+     * @param {?} label
+     * @return {?}
+     */
+    sortItems(label) {
+        this.tableDataService.reorder(label);
+    }
+}
+TableHeaderComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'ml-table-header, [ml-table-header]',
+                template: "<tr class=\"header-row\">\n    <th\n            [hidden]=\"columnName === '_id'\"\n            *ngFor=\"let columnName of getData()\"\n            class=\"column\">\n        <button\n                (click)=\"sortItems(columnName)\"\n                class=\"table-order-button\"\n                title=\"Click to reorder\"\n        >{{data[columnName].title}}\n        </button>\n    </th>\n    <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
+            }] }
+];
+/** @nocollapse */
+TableHeaderComponent.ctorParameters = () => [
+    { type: TableDataService }
+];
+TableHeaderComponent.propDecorators = {
+    data: [{ type: Input }],
+    isEditable: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class TableModule {
 }
 TableModule.decorators = [
@@ -1858,7 +1819,6 @@ TableModule.decorators = [
                 declarations: [
                     TableColumnComponent,
                     TableContainerComponent,
-                    TableFooterComponent,
                     TableHeaderComponent,
                     TableRowComponent,
                     TableComponent
@@ -1871,7 +1831,6 @@ TableModule.decorators = [
                 exports: [
                     TableColumnComponent,
                     TableContainerComponent,
-                    TableFooterComponent,
                     TableHeaderComponent,
                     TableRowComponent,
                     TableComponent
@@ -1884,11 +1843,23 @@ TableModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class MessageComponent {
-    constructor() { }
+    constructor() {
+        this.hasTimeOut = false;
+        this.timeout = 1000;
+        this.close = new EventEmitter();
+    }
     /**
      * @return {?}
      */
     ngOnInit() {
+        if (this.hasTimeOut) {
+            setTimeout((/**
+             * @return {?}
+             */
+            () => {
+                this.close.emit(true);
+            }), this.timeout);
+        }
     }
     /**
      * @return {?}
@@ -1896,19 +1867,28 @@ class MessageComponent {
     getClass() {
         return `message ${this.type}`;
     }
+    /**
+     * @return {?}
+     */
+    onClose() {
+        this.close.emit(true);
+    }
 }
 MessageComponent.decorators = [
     { type: Component, args: [{
                 changeDetection: ChangeDetectionStrategy.OnPush,
                 selector: 'ml-message',
-                template: "<div [ngClass]=\"getClass()\" *ngIf=\"message\">{{message}}</div>\n"
+                template: "<div [ngClass]=\"getClass()\" *ngIf=\"message\">\n    <span ngClass=\"message-text\">{{message}}</span>\n    <button ngClass=\"message-close\" (click)=\"onClose()\">X</button>\n</div>\n"
             }] }
 ];
 /** @nocollapse */
 MessageComponent.ctorParameters = () => [];
 MessageComponent.propDecorators = {
     message: [{ type: Input }],
-    type: [{ type: Input }]
+    type: [{ type: Input }],
+    hasTimeOut: [{ type: Input }],
+    timeout: [{ type: Input }],
+    close: [{ type: Output }]
 };
 
 /**
@@ -1931,13 +1911,95 @@ MessageModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class VirtualGridService {
+    constructor() {
+        this.visible = false;
+        this.$visible = new Subject();
+        window.onkeyup = (/**
+         * @param {?} e
+         * @return {?}
+         */
+        e => {
+            if (e.ctrlKey && e.code === 'KeyG') {
+                this.visible = !this.visible;
+                this.$visible.next(this.visible);
+            }
+        });
+    }
+}
+VirtualGridService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+VirtualGridService.ctorParameters = () => [];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class VirtualGridComponent {
+    /**
+     * @param {?} virtualGridService
+     */
+    constructor(virtualGridService) {
+        this.virtualGridService = virtualGridService;
+        this.maxRows = 24;
+        this.visible = false;
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        this.range = new Array(this.maxRows).fill(null);
+        this.$visible = this.virtualGridService.$visible
+            .subscribe((/**
+         * @param {?} visible
+         * @return {?}
+         */
+        visible => this.visible = visible));
+    }
+    /**
+     * @param {?} e
+     * @return {?}
+     */
+    toggle(e) {
+        console.log(e);
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        this.$visible.unsubscribe();
+    }
+}
+VirtualGridComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'ml-virtual-grid',
+                template: "<div [ngClass]=\"{\n'virtual-grid': true,\n'-visible': visible\n}\" (keyup)=\"toggle($event)\">\n  <div class=\"grid-container\">\n    <div class=\"grid\">\n      <span *ngFor=\"let i of range\"></span>\n    </div>\n  </div>\n</div>\n",
+                providers: [VirtualGridService],
+                styles: [""]
+            }] }
+];
+/** @nocollapse */
+VirtualGridComponent.ctorParameters = () => [
+    { type: VirtualGridService }
+];
+VirtualGridComponent.propDecorators = {
+    maxRows: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class MicroLayoutLibModule {
 }
 MicroLayoutLibModule.decorators = [
     { type: NgModule, args: [{
                 declarations: [
                     ArrayToChunksPipe,
-                    MicroLayoutLibComponent
+                    MicroLayoutLibComponent,
+                    VirtualGridComponent
                 ],
                 imports: [
                     FormModule,
@@ -1958,7 +2020,8 @@ MicroLayoutLibModule.decorators = [
                     ProgressModule,
                     TableModule,
                     FormModule,
-                    MessageModule
+                    MessageModule,
+                    VirtualGridComponent
                 ],
                 providers: [ArrayToChunksPipe, Ng2OrderPipe]
             },] }
@@ -1974,6 +2037,6 @@ MicroLayoutLibModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, ButtonComponent as ɵj, ButtonsModule as ɵi, CardContainerComponent as ɵo, CardFooterComponent as ɵn, CardHeaderComponent as ɵm, CardModule as ɵk, CardComponent as ɵl, AliasComponent as ɵg, DropItemsComponent as ɵf, DropComponent as ɵd, DropService as ɵe, FormModule as ɵb, PartsComponent as ɵh, SwitchComponent as ɵc, LinkModule as ɵp, LinkComponent as ɵq, MessageModule as ɵbe, MessageComponent as ɵbf, ArrayToChunksPipe as ɵa, ProgressModule as ɵr, ProgressComponent as ɵs, InfoService as ɵz, TableColumnComponent as ɵu, TableContainerComponent as ɵv, TableDataService as ɵbb, TableFooterComponent as ɵw, TableHeaderComponent as ɵx, TableMessagingService as ɵy, TableRowComponent as ɵba, TableModule as ɵt, TableService as ɵbd, TableComponent as ɵbc };
+export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, ButtonComponent as ɵl, ButtonsModule as ɵk, CardContainerComponent as ɵr, CardFooterComponent as ɵq, CardHeaderComponent as ɵp, CardModule as ɵm, CardService as ɵo, CardComponent as ɵn, DropItemsComponent as ɵh, DropComponent as ɵf, DropService as ɵg, FormModule as ɵd, PartsComponent as ɵj, SlugComponent as ɵi, SwitchComponent as ɵe, LinkModule as ɵs, LinkComponent as ɵt, MessageModule as ɵbe, MessageComponent as ɵbf, ArrayToChunksPipe as ɵa, ProgressModule as ɵu, ProgressComponent as ɵv, TableColumnComponent as ɵx, TableContainerComponent as ɵy, TableDataService as ɵba, TableHeaderComponent as ɵz, TableRowComponent as ɵbc, TableModule as ɵw, TableService as ɵbb, TableComponent as ɵbd, VirtualGridComponent as ɵb, VirtualGridService as ɵc };
 
 //# sourceMappingURL=micro-layout-lib.js.map

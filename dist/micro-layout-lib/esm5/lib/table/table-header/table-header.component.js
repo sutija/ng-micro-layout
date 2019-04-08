@@ -3,11 +3,10 @@
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Component, Input } from '@angular/core';
-import { TableMessagingService } from '../table-messaging.service';
-import { MESSAGES, CONTEXTS } from '../table.constants';
+import { TableDataService } from '../table-data.service';
 var TableHeaderComponent = /** @class */ (function () {
-    function TableHeaderComponent(tableMessagingService) {
-        this.tableMessagingService = tableMessagingService;
+    function TableHeaderComponent(tableDataService) {
+        this.tableDataService = tableDataService;
         this.data = {};
         this.isEditable = false;
     }
@@ -34,23 +33,17 @@ var TableHeaderComponent = /** @class */ (function () {
      * @return {?}
      */
     function (label) {
-        this.tableMessagingService.notify({
-            data: {
-                sort_by: label
-            },
-            message: MESSAGES.SORT_CLICK,
-            type: CONTEXTS.DEFAULT
-        });
+        this.tableDataService.reorder(label);
     };
     TableHeaderComponent.decorators = [
         { type: Component, args: [{
                     selector: 'ml-table-header, [ml-table-header]',
-                    template: "<tr ngClass=\"header-row\">\n  <th\n          [hidden]=\"columnName === '_id'\"\n          *ngFor=\"let columnName of getData(); let i = index;\" ngClass=\"column\">\n    <button\n            (click)=\"sortItems(columnName)\"\n            class=\"Table__OrderButton\"\n            title=\"Click to reorder\"\n    >{{data[columnName].title}}\n    </button>\n  </th>\n  <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
+                    template: "<tr class=\"header-row\">\n    <th\n            [hidden]=\"columnName === '_id'\"\n            *ngFor=\"let columnName of getData()\"\n            class=\"column\">\n        <button\n                (click)=\"sortItems(columnName)\"\n                class=\"table-order-button\"\n                title=\"Click to reorder\"\n        >{{data[columnName].title}}\n        </button>\n    </th>\n    <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
                 }] }
     ];
     /** @nocollapse */
     TableHeaderComponent.ctorParameters = function () { return [
-        { type: TableMessagingService }
+        { type: TableDataService }
     ]; };
     TableHeaderComponent.propDecorators = {
         data: [{ type: Input }],
@@ -68,6 +61,6 @@ if (false) {
      * @type {?}
      * @protected
      */
-    TableHeaderComponent.prototype.tableMessagingService;
+    TableHeaderComponent.prototype.tableDataService;
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFibGUtaGVhZGVyLmNvbXBvbmVudC5qcyIsInNvdXJjZVJvb3QiOiJuZzovL21pY3JvLWxheW91dC1saWIvIiwic291cmNlcyI6WyJsaWIvdGFibGUvdGFibGUtaGVhZGVyL3RhYmxlLWhlYWRlci5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxTQUFTLEVBQUUsS0FBSyxFQUFFLE1BQU0sZUFBZSxDQUFDO0FBRWpELE9BQU8sRUFBRSxxQkFBcUIsRUFBRSxNQUFNLDRCQUE0QixDQUFDO0FBQ25FLE9BQU8sRUFBRSxRQUFRLEVBQUUsUUFBUSxFQUFFLE1BQU0sb0JBQW9CLENBQUM7QUFFeEQ7SUFRRSw4QkFBc0IscUJBQTRDO1FBQTVDLDBCQUFxQixHQUFyQixxQkFBcUIsQ0FBdUI7UUFIekQsU0FBSSxHQUFXLEVBQUUsQ0FBQztRQUNsQixlQUFVLEdBQUcsS0FBSyxDQUFDO0lBRXlDLENBQUM7Ozs7SUFFdEUsc0NBQU87OztJQUFQO1FBQ0UsSUFBSSxJQUFJLENBQUMsSUFBSSxFQUFFO1lBQ2IsT0FBTyxNQUFNLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsSUFBSSxFQUFFLENBQUM7U0FDckM7YUFBTTtZQUNMLE9BQU8sRUFBRSxDQUFDO1NBQ1g7SUFDSCxDQUFDOzs7OztJQUVELHdDQUFTOzs7O0lBQVQsVUFBVSxLQUFLO1FBQ2IsSUFBSSxDQUFDLHFCQUFxQixDQUFDLE1BQU0sQ0FBQztZQUNoQyxJQUFJLEVBQUU7Z0JBQ0osT0FBTyxFQUFFLEtBQUs7YUFDZjtZQUNELE9BQU8sRUFBRSxRQUFRLENBQUMsVUFBVTtZQUM1QixJQUFJLEVBQUUsUUFBUSxDQUFDLE9BQU87U0FDdkIsQ0FBQyxDQUFDO0lBQ0wsQ0FBQzs7Z0JBMUJGLFNBQVMsU0FBQztvQkFDVCxRQUFRLEVBQUUsb0NBQW9DO29CQUM5Qyx5YUFBNEM7aUJBQzdDOzs7O2dCQU5RLHFCQUFxQjs7O3VCQVEzQixLQUFLOzZCQUNMLEtBQUs7O0lBcUJSLDJCQUFDO0NBQUEsQUEzQkQsSUEyQkM7U0F2Qlksb0JBQW9COzs7SUFDL0Isb0NBQTJCOztJQUMzQiwwQ0FBNEI7Ozs7O0lBRWhCLHFEQUFzRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbXBvbmVudCwgSW5wdXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcblxuaW1wb3J0IHsgVGFibGVNZXNzYWdpbmdTZXJ2aWNlIH0gZnJvbSAnLi4vdGFibGUtbWVzc2FnaW5nLnNlcnZpY2UnO1xuaW1wb3J0IHsgTUVTU0FHRVMsIENPTlRFWFRTIH0gZnJvbSAnLi4vdGFibGUuY29uc3RhbnRzJztcblxuQENvbXBvbmVudCh7XG4gIHNlbGVjdG9yOiAnbWwtdGFibGUtaGVhZGVyLCBbbWwtdGFibGUtaGVhZGVyXScsXG4gIHRlbXBsYXRlVXJsOiAnLi90YWJsZS1oZWFkZXIuY29tcG9uZW50Lmh0bWwnXG59KVxuZXhwb3J0IGNsYXNzIFRhYmxlSGVhZGVyQ29tcG9uZW50IHtcbiAgQElucHV0KCkgZGF0YTogT2JqZWN0ID0ge307XG4gIEBJbnB1dCgpIGlzRWRpdGFibGUgPSBmYWxzZTtcblxuICBjb25zdHJ1Y3Rvcihwcm90ZWN0ZWQgdGFibGVNZXNzYWdpbmdTZXJ2aWNlOiBUYWJsZU1lc3NhZ2luZ1NlcnZpY2UpIHt9XG5cbiAgZ2V0RGF0YSgpOiBBcnJheTxTdHJpbmc+IHtcbiAgICBpZiAodGhpcy5kYXRhKSB7XG4gICAgICByZXR1cm4gT2JqZWN0LmtleXModGhpcy5kYXRhKSB8fCBbXTtcbiAgICB9IGVsc2Uge1xuICAgICAgcmV0dXJuIFtdO1xuICAgIH1cbiAgfVxuXG4gIHNvcnRJdGVtcyhsYWJlbCkge1xuICAgIHRoaXMudGFibGVNZXNzYWdpbmdTZXJ2aWNlLm5vdGlmeSh7XG4gICAgICBkYXRhOiB7XG4gICAgICAgIHNvcnRfYnk6IGxhYmVsXG4gICAgICB9LFxuICAgICAgbWVzc2FnZTogTUVTU0FHRVMuU09SVF9DTElDSyxcbiAgICAgIHR5cGU6IENPTlRFWFRTLkRFRkFVTFRcbiAgICB9KTtcbiAgfVxufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFibGUtaGVhZGVyLmNvbXBvbmVudC5qcyIsInNvdXJjZVJvb3QiOiJuZzovL21pY3JvLWxheW91dC1saWIvIiwic291cmNlcyI6WyJsaWIvdGFibGUvdGFibGUtaGVhZGVyL3RhYmxlLWhlYWRlci5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxTQUFTLEVBQUUsS0FBSyxFQUFFLE1BQU0sZUFBZSxDQUFDO0FBRWpELE9BQU8sRUFBQyxnQkFBZ0IsRUFBQyxNQUFNLHVCQUF1QixDQUFDO0FBRXZEO0lBUUUsOEJBQXNCLGdCQUFrQztRQUFsQyxxQkFBZ0IsR0FBaEIsZ0JBQWdCLENBQWtCO1FBSC9DLFNBQUksR0FBVyxFQUFFLENBQUM7UUFDbEIsZUFBVSxHQUFHLEtBQUssQ0FBQztJQUUrQixDQUFDOzs7O0lBRTVELHNDQUFPOzs7SUFBUDtRQUNFLElBQUksSUFBSSxDQUFDLElBQUksRUFBRTtZQUNiLE9BQU8sTUFBTSxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLElBQUksRUFBRSxDQUFDO1NBQ3JDO2FBQU07WUFDTCxPQUFPLEVBQUUsQ0FBQztTQUNYO0lBQ0gsQ0FBQzs7Ozs7SUFFRCx3Q0FBUzs7OztJQUFULFVBQVUsS0FBSztRQUNiLElBQUksQ0FBQyxnQkFBZ0IsQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLENBQUM7SUFDdkMsQ0FBQzs7Z0JBcEJGLFNBQVMsU0FBQztvQkFDVCxRQUFRLEVBQUUsb0NBQW9DO29CQUM5QyxvY0FBNEM7aUJBQzdDOzs7O2dCQUxPLGdCQUFnQjs7O3VCQU9yQixLQUFLOzZCQUNMLEtBQUs7O0lBZVIsMkJBQUM7Q0FBQSxBQXJCRCxJQXFCQztTQWpCWSxvQkFBb0I7OztJQUMvQixvQ0FBMkI7O0lBQzNCLDBDQUE0Qjs7Ozs7SUFFaEIsZ0RBQTRDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29tcG9uZW50LCBJbnB1dCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG5pbXBvcnQge1RhYmxlRGF0YVNlcnZpY2V9IGZyb20gJy4uL3RhYmxlLWRhdGEuc2VydmljZSc7XG5cbkBDb21wb25lbnQoe1xuICBzZWxlY3RvcjogJ21sLXRhYmxlLWhlYWRlciwgW21sLXRhYmxlLWhlYWRlcl0nLFxuICB0ZW1wbGF0ZVVybDogJy4vdGFibGUtaGVhZGVyLmNvbXBvbmVudC5odG1sJ1xufSlcbmV4cG9ydCBjbGFzcyBUYWJsZUhlYWRlckNvbXBvbmVudCB7XG4gIEBJbnB1dCgpIGRhdGE6IE9iamVjdCA9IHt9O1xuICBASW5wdXQoKSBpc0VkaXRhYmxlID0gZmFsc2U7XG5cbiAgY29uc3RydWN0b3IocHJvdGVjdGVkIHRhYmxlRGF0YVNlcnZpY2U6IFRhYmxlRGF0YVNlcnZpY2UpIHt9XG5cbiAgZ2V0RGF0YSgpOiBBcnJheTxTdHJpbmc+IHtcbiAgICBpZiAodGhpcy5kYXRhKSB7XG4gICAgICByZXR1cm4gT2JqZWN0LmtleXModGhpcy5kYXRhKSB8fCBbXTtcbiAgICB9IGVsc2Uge1xuICAgICAgcmV0dXJuIFtdO1xuICAgIH1cbiAgfVxuXG4gIHNvcnRJdGVtcyhsYWJlbCkge1xuICAgIHRoaXMudGFibGVEYXRhU2VydmljZS5yZW9yZGVyKGxhYmVsKTtcbiAgfVxufVxuIl19

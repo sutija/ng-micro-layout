@@ -1,9 +1,9 @@
-import { TableMessagingService } from '../table-messaging.service';
+import { TableDataService } from '../table-data.service';
 export declare class TableHeaderComponent {
-    protected tableMessagingService: TableMessagingService;
+    protected tableDataService: TableDataService;
     data: Object;
     isEditable: boolean;
-    constructor(tableMessagingService: TableMessagingService);
+    constructor(tableDataService: TableDataService);
     getData(): Array<String>;
     sortItems(label: any): void;
 }

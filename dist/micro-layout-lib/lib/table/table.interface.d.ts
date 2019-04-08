@@ -1,3 +1,4 @@
+declare type DataChangeType = 'add' | 'delete' | 'edit';
 export interface Link {
     id?: Number | String;
     title: String;
@@ -10,6 +11,9 @@ export interface Drop {
     label: String;
     value: String | Number | Boolean;
 }
+export interface TableOptionsArray {
+    [index: string]: TableOptions;
+}
 export interface TableColumnSchema {
     defaultValue: any;
     isEditable?: Boolean;
@@ -20,9 +24,9 @@ export interface TableColumnSchema {
 }
 export interface TableColumDataComponent {
     component: any;
-    componentParams: Array<TableColumDataComponentParam>;
+    componentParams: Array<TableColumnDataComponentParam>;
 }
-export interface TableColumDataComponentParam {
+export interface TableColumnDataComponentParam {
     name: string;
     value: any;
 }
@@ -58,14 +62,16 @@ export interface Table {
 export interface TableSchema {
     [key: string]: TableColumnSchema;
 }
+export declare type editOptions = 'internal' | 'external';
 export interface TableOptions {
     canAddRows?: boolean;
     canDelete?: boolean;
     canChangeNumberOfItems?: boolean;
-    editOption?: 'INTERNAL' | 'EXTERNAL';
+    editOption?: editOptions;
     isEditable?: boolean;
     isSortable?: boolean;
-    isReordable?: boolean;
+    isDraggable?: boolean;
+    numberOfItems?: Array<number>;
     schema: TableSchema;
     isInternalPagination?: boolean;
 }
@@ -73,3 +79,8 @@ export interface PagesInfo {
     pageNo: number;
     totalPages: number;
 }
+export interface DataChange {
+    type: DataChangeType;
+    data: object | number;
+}
+export {};

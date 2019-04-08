@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/router'), require('rxjs'), require('@angular/animations'), require('@angular/platform-browser'), require('ng2-order-pipe'), require('@angular/forms'), require('@angular/common'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('micro-layout-lib', ['exports', '@angular/router', 'rxjs', '@angular/animations', '@angular/platform-browser', 'ng2-order-pipe', '@angular/forms', '@angular/common', '@angular/core'], factory) :
-    (factory((global['micro-layout-lib'] = {}),global.ng.router,global.rxjs,global.ng.animations,global.ng.platformBrowser,global.ng2OrderPipe,global.ng.forms,global.ng.common,global.ng.core));
-}(this, (function (exports,router,rxjs,animations,platformBrowser,ng2OrderPipe,forms,common,i0) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/router'), require('@angular/animations'), require('@angular/platform-browser'), require('ng2-order-pipe'), require('@angular/forms'), require('@angular/common'), require('@angular/core'), require('rxjs')) :
+    typeof define === 'function' && define.amd ? define('micro-layout-lib', ['exports', '@angular/router', '@angular/animations', '@angular/platform-browser', 'ng2-order-pipe', '@angular/forms', '@angular/common', '@angular/core', 'rxjs'], factory) :
+    (factory((global['micro-layout-lib'] = {}),global.ng.router,global.ng.animations,global.ng.platformBrowser,global.ng2OrderPipe,global.ng.forms,global.ng.common,global.ng.core,global.rxjs));
+}(this, (function (exports,router,animations,platformBrowser,ng2OrderPipe,forms,common,i0,rxjs) { 'use strict';
 
     /**
      * @fileoverview added by tsickle
@@ -57,7 +57,18 @@
             this.disabled = false;
             this.types = [];
             this.type = 'button';
+            this.title = false;
+            this.clicked = new i0.EventEmitter();
         }
+        /**
+         * @return {?}
+         */
+        ButtonComponent.prototype.emitClick = /**
+         * @return {?}
+         */
+            function () {
+                this.clicked.emit(true);
+            };
         /**
          * @return {?}
          */
@@ -70,7 +81,7 @@
         ButtonComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-button',
-                        template: "<button [ngClass]=\"getClass()\" [disabled]=\"disabled\" [type]=\"type\">\n    <ng-content></ng-content>\n</button>\n"
+                        template: "<button [ngClass]=\"getClass()\" [disabled]=\"disabled\" [type]=\"type\">\n    <ng-content *ngIf=\"!title\"></ng-content>\n    {{ title ? title : null }}\n</button>\n"
                     }] }
         ];
         /** @nocollapse */
@@ -78,7 +89,10 @@
         ButtonComponent.propDecorators = {
             disabled: [{ type: i0.Input }],
             types: [{ type: i0.Input }],
-            type: [{ type: i0.Input }]
+            type: [{ type: i0.Input }],
+            title: [{ type: i0.Input }],
+            clicked: [{ type: i0.Output }],
+            emitClick: [{ type: i0.HostListener, args: ['click',] }]
         };
         return ButtonComponent;
     }());
@@ -94,6 +108,7 @@
             { type: i0.NgModule, args: [{
                         declarations: [ButtonComponent],
                         imports: [
+                            platformBrowser.BrowserModule,
                             common.CommonModule
                         ],
                         exports: [ButtonComponent],
@@ -106,9 +121,65 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CardService = /** @class */ (function () {
+        function CardService() {
+            this.isCollapsed = false;
+            this.canCollapse = true;
+            this.isCollapsed$ = new rxjs.Subject();
+            this.canCollapse$ = new rxjs.Subject();
+        }
+        /**
+         * @param {?} canCollapse
+         * @return {?}
+         */
+        CardService.prototype.setCanCollapse = /**
+         * @param {?} canCollapse
+         * @return {?}
+         */
+            function (canCollapse) {
+                this.canCollapse = canCollapse;
+                this.canCollapse$.next(this.canCollapse);
+            };
+        /**
+         * @param {?} isCollapsed
+         * @return {?}
+         */
+        CardService.prototype.setIsCollapsed = /**
+         * @param {?} isCollapsed
+         * @return {?}
+         */
+            function (isCollapsed) {
+                this.isCollapsed = isCollapsed;
+                this.isCollapsed$.next(this.isCollapsed);
+            };
+        /**
+         * @return {?}
+         */
+        CardService.prototype.toggleCollapsed = /**
+         * @return {?}
+         */
+            function () {
+                this.isCollapsed = !this.isCollapsed;
+                this.isCollapsed$.next(this.isCollapsed);
+            };
+        CardService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        CardService.ctorParameters = function () { return []; };
+        return CardService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CardComponent = /** @class */ (function () {
-        function CardComponent() {
-            this.isColapsed = false;
+        function CardComponent(cardService) {
+            this.cardService = cardService;
+            this.isCollapsed = false;
+            this.canCollapse = true;
+            this.subscriptions$ = [];
         }
         /**
          * @return {?}
@@ -117,15 +188,44 @@
          * @return {?}
          */
             function () {
+                var _this = this;
+                this.cardService.setIsCollapsed(this.isCollapsed);
+                this.cardService.setCanCollapse(this.canCollapse);
+                this.subscriptions$.push(this.cardService.isCollapsed$
+                    .subscribe(( /**
+             * @param {?} isCollapsed
+             * @return {?}
+             */function (isCollapsed) { return _this.isCollapsed = isCollapsed; })));
+            };
+        /**
+         * @return {?}
+         */
+        CardComponent.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                this.subscriptions$.forEach(( /**
+                 * @param {?} item
+                 * @return {?}
+                 */function (item) { return item.unsubscribe(); }));
             };
         CardComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-card, [ml-card]',
-                        template: "<div ngClass=\"card\">\n  <ng-content select=\"ml-card-header, [ml-card-header]\"></ng-content>\n  <ng-content select=\"ml-card-container, [ml-card-container]\"></ng-content>\n  <ng-content select=\"ml-card-footer, [ml-card-footer]\"></ng-content>\n</div>\n"
+                        template: "<div [ngClass]=\"{\n'card': true,\n'card-collapsed': isCollapsed\n}\">\n  <ng-content select=\"ml-card-header, [ml-card-header]\"></ng-content>\n  <ng-content select=\"ml-card-container, [ml-card-container]\"></ng-content>\n  <ng-content select=\"ml-card-footer, [ml-card-footer]\"></ng-content>\n</div>\n",
+                        providers: [CardService]
                     }] }
         ];
         /** @nocollapse */
-        CardComponent.ctorParameters = function () { return []; };
+        CardComponent.ctorParameters = function () {
+            return [
+                { type: CardService }
+            ];
+        };
+        CardComponent.propDecorators = {
+            isCollapsed: [{ type: i0.Input }],
+            canCollapse: [{ type: i0.Input }]
+        };
         return CardComponent;
     }());
 
@@ -134,7 +234,11 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CardHeaderComponent = /** @class */ (function () {
-        function CardHeaderComponent() {
+        function CardHeaderComponent(cardService) {
+            this.cardService = cardService;
+            this.canCollapse = true;
+            this.isCollapsed = false;
+            this.subscriptions$ = [];
         }
         /**
          * @return {?}
@@ -143,15 +247,51 @@
          * @return {?}
          */
             function () {
+                var _this = this;
+                this.subscriptions$.push(this.cardService.isCollapsed$
+                    .subscribe(( /**
+             * @param {?} isCollapsed
+             * @return {?}
+             */function (isCollapsed) { return _this.isCollapsed = isCollapsed; })));
+                this.subscriptions$.push(this.cardService.canCollapse$
+                    .subscribe(( /**
+             * @param {?} canCollapse
+             * @return {?}
+             */function (canCollapse) { return _this.canCollapse = canCollapse; })));
+            };
+        /**
+         * @return {?}
+         */
+        CardHeaderComponent.prototype.toggleCollapse = /**
+         * @return {?}
+         */
+            function () {
+                this.cardService.toggleCollapsed();
+            };
+        /**
+         * @return {?}
+         */
+        CardHeaderComponent.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                this.subscriptions$.forEach(( /**
+                 * @param {?} item
+                 * @return {?}
+                 */function (item) { return item.unsubscribe(); }));
             };
         CardHeaderComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-card-header',
-                        template: "<div ngClass=\"wrapper\">\n    <ng-content></ng-content>\n</div>\n"
+                        template: "<div ngClass=\"wrapper\">\n    <div>\n        <ng-content></ng-content>\n    </div>\n    <div *ngIf=\"canCollapse\" [ngClass]=\"{'toggle-collapse': true, 'collapsed': isCollapsed}\" (click)=\"toggleCollapse()\">{{ isCollapsed ? '+' : '-'}}</div>\n</div>\n"
                     }] }
         ];
         /** @nocollapse */
-        CardHeaderComponent.ctorParameters = function () { return []; };
+        CardHeaderComponent.ctorParameters = function () {
+            return [
+                { type: CardService }
+            ];
+        };
         return CardHeaderComponent;
     }());
 
@@ -186,7 +326,9 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CardContainerComponent = /** @class */ (function () {
-        function CardContainerComponent() {
+        function CardContainerComponent(cardService) {
+            this.cardService = cardService;
+            this.subscriptions$ = [];
         }
         /**
          * @return {?}
@@ -195,15 +337,37 @@
          * @return {?}
          */
             function () {
+                var _this = this;
+                this.subscriptions$.push(this.cardService.isCollapsed$
+                    .subscribe(( /**
+             * @param {?} isCollapsed
+             * @return {?}
+             */function (isCollapsed) { return _this.isCollapsed = isCollapsed; })));
+            };
+        /**
+         * @return {?}
+         */
+        CardContainerComponent.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                this.subscriptions$.forEach(( /**
+                 * @param {?} item
+                 * @return {?}
+                 */function (item) { return item.unsubscribe(); }));
             };
         CardContainerComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-card-container',
-                        template: "<div ngClass=\"wrapper\">\n    <ng-content></ng-content>\n</div>\n"
+                        template: "<div [ngClass]=\"{'wrapper': true, 'collapsed': isCollapsed}\">\n    <ng-content></ng-content>\n</div>\n"
                     }] }
         ];
         /** @nocollapse */
-        CardContainerComponent.ctorParameters = function () { return []; };
+        CardContainerComponent.ctorParameters = function () {
+            return [
+                { type: CardService }
+            ];
+        };
         return CardContainerComponent;
     }());
 
@@ -243,12 +407,17 @@
          * @return {?}
          */
             function () {
-                this.router.navigateByUrl(this.target);
+                if (this.type === 'internal') {
+                    this.router.navigateByUrl(this.target);
+                }
+                else {
+                    window.location.href = this.target;
+                }
             };
         LinkComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-link',
-                        template: "<button ngClass=\"link\" type=\"button\" (click)=\"onClick()\">{{title}}</button>\n",
+                        template: "<a ngClass=\"link\" (click)=\"onClick()\">{{title}}</a>\n",
                         styles: [".link{background:0 0;border:none;cursor:pointer}.link:hover{text-decoration:underline}"]
                     }] }
         ];
@@ -260,7 +429,8 @@
         };
         LinkComponent.propDecorators = {
             title: [{ type: i0.Input }],
-            target: [{ type: i0.Input }]
+            target: [{ type: i0.Input }],
+            type: [{ type: i0.Input }]
         };
         return LinkComponent;
     }());
@@ -290,6 +460,7 @@
      */
     var ProgressComponent = /** @class */ (function () {
         function ProgressComponent() {
+            this.progressPercent = 0;
         }
         /**
          * @return {?}
@@ -302,12 +473,15 @@
         ProgressComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-progress',
-                        template: "<progress></progress>\n",
-                        styles: [""]
+                        template: "<div class=\"progress-container\">\n    <div class=\"progress\" [ngStyle]=\"{width: progressPercent + '%'}\">\n        <span class=\"progress-text\">{{progressText ? progressText : null}}</span>\n    </div>\n</div>\n"
                     }] }
         ];
         /** @nocollapse */
         ProgressComponent.ctorParameters = function () { return []; };
+        ProgressComponent.propDecorators = {
+            progressPercent: [{ type: i0.Input }],
+            progressText: [{ type: i0.Input }]
+        };
         return ProgressComponent;
     }());
 
@@ -335,43 +509,30 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var MESSAGES = {
-        ITEM_ADD: 'ITEM_ADD',
-        ITEM_EDIT: 'ITEM_EDIT',
-        ITEM_EDIT_STARTED: 'ITEM_EDIT_STARTED',
-        ITEM_DELETE: 'ITEM_DELETE',
-        ITEM_DELETE_CANCELED: 'ITEM_DELETE_CANCELED',
-        SORT_CLICK: 'SORT_CLICK',
-        MULTIPLE_DELETE: 'MULTIPLE_DELETE',
-    };
-    /** @type {?} */
-    var CONTEXTS = {
-        DEFAULT: 'DEFAUL',
-    };
-    /** @type {?} */
     var TABLE_COLUMN_TYPES = {
-        STRING: 'STRING',
-        NUMBER: 'NUMBER',
-        TEXTAREA: 'TEXTAREA',
-        SWITCH: 'SWITCH',
-        DROP: 'DROP',
-        COMPONENT: 'COMPONENT',
-        DATE: 'DATE'
+        string: 'string',
+        number: 'number',
+        textarea: 'textarea',
+        switch: 'switch',
+        drop: 'drop',
+        component: 'component',
+        date: 'date'
     };
     /** @type {?} */
     var DEFAULT_TABLE_OPTIONS = {
         canAddRows: false,
         canDelete: false,
-        editOption: 'INTERNAL',
+        editOption: 'internal',
         isEditable: false,
-        isReordable: false,
+        isDraggable: false,
         isSortable: false,
+        numberOfItems: [50, 100, 200],
         schema: {}
     };
     /** @type {?} */
     var PAGINATION = {
-        PREVIOUS: 'PREVIOUS',
-        NEXT: 'NEXT'
+        previous: 'previous',
+        next: 'next',
     };
 
     /**
@@ -384,7 +545,6 @@
             this.dataValue = false;
             this.subscriptions$ = [];
             this.dataChange = new i0.EventEmitter();
-            this.clicked = new i0.EventEmitter();
             this.isEditing = false;
             this.isEditable = true;
             this.tableColumnTypes = TABLE_COLUMN_TYPES;
@@ -421,15 +581,6 @@
         /**
          * @return {?}
          */
-        TableColumnComponent.prototype.onElementClick = /**
-         * @return {?}
-         */
-            function () {
-                this.clicked.emit(true);
-            };
-        /**
-         * @return {?}
-         */
         TableColumnComponent.prototype.handleData = /**
          * @return {?}
          */
@@ -457,7 +608,7 @@
          */
             function (component) {
                 var _this = this;
-                if (component && this.columnType === TABLE_COLUMN_TYPES.COMPONENT) {
+                if (component && this.columnType === TABLE_COLUMN_TYPES.component) {
                     this.componentRef =
                         this.columnComponent.createComponent(this.compiler.resolveComponentFactory(component.component));
                     // Set component params
@@ -466,14 +617,16 @@
                      * @return {?}
                      */function (param) {
                         if (param.value instanceof Function) {
-                            // Subscribe to event
-                            _this.subscriptions$.push(_this.componentRef.instance[param.name]
-                                .subscribe(( /**
-                         * @param {?} e
-                         * @return {?}
-                         */function (e) {
-                                param.value(e);
-                            })));
+                            if (_this.componentRef.instance[param.name]) {
+                                // Subscribe to event
+                                _this.subscriptions$.push(_this.componentRef.instance[param.name]
+                                    .subscribe(( /**
+                             * @param {?} e
+                             * @return {?}
+                             */function (e) {
+                                    param.value(e);
+                                })));
+                            }
                         }
                         else {
                             // Set param
@@ -499,7 +652,7 @@
         TableColumnComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-table-column, [ml-table-column]',
-                        template: "<div\n    id=\"{{data.id}}\"\n    *ngIf=\"data !== null && !isEditing && (columnType !== tableColumnTypes.COMPONENT)\"\n    ngClass=\"column\"\n>\n    <span (click)=\"onElementClick()\">{{data}}</span>\n</div>\n<div #columnComponent class=\"COMPONENT\"></div>\n<div\n        id=\"{{ data.id }}\"\n        [ngSwitch]=\"columnType\"\n        *ngIf=\"data !== null && isEditing && isEditable\"\n        class=\"Table__Column Form__Item\"\n>\n    <textarea *ngSwitchCase=\"tableColumnTypes.TEXTAREA\" [(ngModel)]=\"data\"></textarea>\n    <ml-switch *ngSwitchCase=\"tableColumnTypes.SWITCH\" [(ngModel)]=\"data\"></ml-switch>\n    <input *ngSwitchDefault type=\"text\" [(ngModel)]=\"data\"/>\n</div>\n<div class=\"Table__Column Table__Column--empty\" *ngIf=\"data === null && !isEditing\">/</div>\n"
+                        template: "<div\n    *ngIf=\"data !== null && !isEditing && (columnType !== tableColumnTypes.component)\"\n    class=\"column\"\n>\n    <span>{{data}}</span>\n</div>\n<div #columnComponent class=\"component\"></div>\n<div\n        [ngSwitch]=\"columnType\"\n        *ngIf=\"data !== null && isEditing && isEditable\"\n        class=\"column table-form-element\"\n>\n    <textarea *ngSwitchCase=\"tableColumnTypes.textarea\" [(ngModel)]=\"data\"></textarea>\n    <ml-switch *ngSwitchCase=\"tableColumnTypes.switch\" [(ngModel)]=\"data\"></ml-switch>\n    <input *ngSwitchDefault type=\"text\" [(ngModel)]=\"data\"/>\n</div>\n<div class=\"column column-empty\" *ngIf=\"data === null && !isEditing\">/</div>\n"
                     }] }
         ];
         /** @nocollapse */
@@ -511,7 +664,6 @@
         TableColumnComponent.propDecorators = {
             data: [{ type: i0.Input }],
             dataChange: [{ type: i0.Output }],
-            clicked: [{ type: i0.Output }],
             isEditing: [{ type: i0.Input }],
             isEditable: [{ type: i0.Input }],
             columnType: [{ type: i0.Input }],
@@ -527,7 +679,6 @@
     var TableContainerComponent = /** @class */ (function () {
         function TableContainerComponent() {
             this.isEditable = false;
-            console.log(this.data);
         }
         /**
          * @param {?} data
@@ -539,7 +690,7 @@
          */
             function (data) {
                 if (data._options && data._options._backgroundColor) {
-                    return 'row ' + data._options._backgroundColor;
+                    return "row " + data._options._backgroundColor;
                 }
                 else {
                     return 'row';
@@ -558,32 +709,6 @@
             isEditable: [{ type: i0.Input }]
         };
         return TableContainerComponent;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TableFooterComponent = /** @class */ (function () {
-        function TableFooterComponent() {
-        }
-        /**
-         * @return {?}
-         */
-        TableFooterComponent.prototype.ngOnInit = /**
-         * @return {?}
-         */
-            function () {
-            };
-        TableFooterComponent.decorators = [
-            { type: i0.Component, args: [{
-                        selector: 'ml-table-footer',
-                        template: "<p>\n  table-footer works!\n</p>\n"
-                    }] }
-        ];
-        /** @nocollapse */
-        TableFooterComponent.ctorParameters = function () { return []; };
-        return TableFooterComponent;
     }());
 
     /*! *****************************************************************************
@@ -614,131 +739,93 @@
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var InfoService = /** @class */ (function () {
-        function InfoService() {
-            this.message = new i0.EventEmitter();
-            this.messageTypes = {
-                info: 'info',
-                error: 'error',
-                warning: 'warning',
-                success: 'success'
-            };
-        }
-        /**
-         * @param {?} message
-         * @return {?}
-         */
-        InfoService.prototype.notify = /**
-         * @param {?} message
-         * @return {?}
-         */
-            function (message) {
-                this.message.emit(message);
-            };
-        InfoService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        InfoService.ctorParameters = function () { return []; };
-        return InfoService;
-    }());
-    /** @type {?} */
-    var MessageResolver = ( /**
-     * @param {?} callbacks
-     * @param {?} message
-     * @return {?}
-     */function (callbacks, message) {
-        callbacks.filter(( /**
-         * @param {?} callback
-         * @return {?}
-         */function (callback) {
-            return callback.type === message.type &&
-                callback.message === message.message;
-        })).every(( /**
-     * @param {?} item
-     * @return {?}
-     */function (item) { return item.callback(message.data); }));
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TableMessagingService = /** @class */ (function (_super) {
-        __extends(TableMessagingService, _super);
-        function TableMessagingService() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        TableMessagingService.decorators = [
-            { type: i0.Injectable }
-        ];
-        return TableMessagingService;
-    }(InfoService));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TableHeaderComponent = /** @class */ (function () {
-        function TableHeaderComponent(tableMessagingService) {
-            this.tableMessagingService = tableMessagingService;
-            this.data = {};
-            this.isEditable = false;
-        }
-        /**
-         * @return {?}
-         */
-        TableHeaderComponent.prototype.getData = /**
-         * @return {?}
-         */
-            function () {
-                if (this.data) {
-                    return Object.keys(this.data) || [];
+    function __awaiter(thisArg, _arguments, P, generator) {
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try {
+                step(generator.next(value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function rejected(value) { try {
+                step(generator["throw"](value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function () { if (t[0] & 1)
+                throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f)
+                throw new TypeError("Generator is already executing.");
+            while (_)
+                try {
+                    if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                        return t;
+                    if (y = 0, t)
+                        op = [op[0] & 2, t.value];
+                    switch (op[0]) {
+                        case 0:
+                        case 1:
+                            t = op;
+                            break;
+                        case 4:
+                            _.label++;
+                            return { value: op[1], done: false };
+                        case 5:
+                            _.label++;
+                            y = op[1];
+                            op = [0];
+                            continue;
+                        case 7:
+                            op = _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                        default:
+                            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                                _ = 0;
+                                continue;
+                            }
+                            if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                                _.label = op[1];
+                                break;
+                            }
+                            if (op[0] === 6 && _.label < t[1]) {
+                                _.label = t[1];
+                                t = op;
+                                break;
+                            }
+                            if (t && _.label < t[2]) {
+                                _.label = t[2];
+                                _.ops.push(op);
+                                break;
+                            }
+                            if (t[2])
+                                _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                    }
+                    op = body.call(thisArg, _);
                 }
-                else {
-                    return [];
+                catch (e) {
+                    op = [6, e];
+                    y = 0;
                 }
-            };
-        /**
-         * @param {?} label
-         * @return {?}
-         */
-        TableHeaderComponent.prototype.sortItems = /**
-         * @param {?} label
-         * @return {?}
-         */
-            function (label) {
-                this.tableMessagingService.notify({
-                    data: {
-                        sort_by: label
-                    },
-                    message: MESSAGES.SORT_CLICK,
-                    type: CONTEXTS.DEFAULT
-                });
-            };
-        TableHeaderComponent.decorators = [
-            { type: i0.Component, args: [{
-                        selector: 'ml-table-header, [ml-table-header]',
-                        template: "<tr ngClass=\"header-row\">\n  <th\n          [hidden]=\"columnName === '_id'\"\n          *ngFor=\"let columnName of getData(); let i = index;\" ngClass=\"column\">\n    <button\n            (click)=\"sortItems(columnName)\"\n            class=\"Table__OrderButton\"\n            title=\"Click to reorder\"\n    >{{data[columnName].title}}\n    </button>\n  </th>\n  <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
-                    }] }
-        ];
-        /** @nocollapse */
-        TableHeaderComponent.ctorParameters = function () {
-            return [
-                { type: TableMessagingService }
-            ];
-        };
-        TableHeaderComponent.propDecorators = {
-            data: [{ type: i0.Input }],
-            isEditable: [{ type: i0.Input }]
-        };
-        return TableHeaderComponent;
-    }());
+                finally {
+                    f = t = 0;
+                }
+            if (op[0] & 5)
+                throw op[1];
+            return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -786,94 +873,53 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * \@todo Create
-     */
-    var TableDataService = /** @class */ (function () {
-        function TableDataService(tableMessagingService, arrayToChunksPipe, ng2OrderPipe$$1) {
-            var _this = this;
-            this.tableMessagingService = tableMessagingService;
-            this.arrayToChunksPipe = arrayToChunksPipe;
-            this.ng2OrderPipe = ng2OrderPipe$$1;
-            this.dataChange = new rxjs.Subject();
-            this.elementSelected$ = new rxjs.Subject();
-            this.tableData = new rxjs.Subject();
-            this.tableId = 'table';
-            this.callbacks = [
-                {
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_EDIT_STARTED,
-                    callback: ( /**
-                     * @return {?}
-                     */function () {
-                        console.log('item edit started');
-                    })
-                },
-                // On sort
-                {
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.SORT_CLICK,
-                    callback: ( /**
-                     * @param {?} data
-                     * @return {?}
-                     */function (data) {
-                        _this.reorder(data.sort_by);
-                    })
-                },
-                // On edit
-                {
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_EDIT,
-                    callback: ( /**
-                     * @param {?} data
-                     * @return {?}
-                     */function (data) { return _this.itemEdit(data); })
-                },
-                // On add
-                {
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_ADD,
-                    callback: null
-                },
-                // On delete
-                {
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_DELETE,
-                    callback: ( /**
-                     * @param {?} data
-                     * @return {?}
-                     */function (data) {
-                        if (confirm("Delete " + data.id + "?")) {
-                            _this.itemDelete(data.id);
-                        }
-                    })
-                },
-            ];
-            this.orderDir = false;
-            this.limit = null;
-            this.pageNumber = 0;
-            this.limit = 100;
-            this.tableMessagingService
-                .message
-                .subscribe(( /**
-         * @param {?} message
-         * @return {?}
-         */function (message) {
-                return MessageResolver(_this.callbacks, message);
-            }));
+    var TableService = /** @class */ (function () {
+        function TableService() {
         }
         /**
-         * @param {?} tableId
+         * @param {?} options
          * @return {?}
          */
-        TableDataService.prototype.setTableId = /**
-         * @param {?} tableId
+        TableService.prototype.setOptions = /**
+         * @param {?} options
          * @return {?}
          */
-            function (tableId) {
-                console.log('table id', tableId);
-                return this.tableId;
+            function (options) {
+                this.tableOptions = options;
             };
+        /**
+         * @return {?}
+         */
+        TableService.prototype.getOptions = /**
+         * @return {?}
+         */
+            function () {
+                return this.tableOptions;
+            };
+        TableService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        TableService.ctorParameters = function () { return []; };
+        return TableService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var TableDataService = /** @class */ (function () {
+        function TableDataService(tableService, arrayToChunksPipe, ng2OrderPipe$$1) {
+            this.tableService = tableService;
+            this.arrayToChunksPipe = arrayToChunksPipe;
+            this.ng2OrderPipe = ng2OrderPipe$$1;
+            this.dataChange$ = new rxjs.Subject();
+            this.elementSelected$ = new rxjs.Subject();
+            this.tableData = new rxjs.Subject();
+            this.orderDir = false;
+            this.limit = 100;
+            this.pageNumber = 0;
+        }
         /**
          * @param {?} limit
          * @return {?}
@@ -885,19 +931,9 @@
             function (limit) {
                 this.limit = limit;
                 this.pageNumber = 0;
-                this.data = null;
                 this.data = this.arrayToChunksPipe
-                    .transform(this.setColumns(this.schema, this._data), this._getLimit());
+                    .transform(this.setColumns(this.schema, this.internalData), this._getLimit());
                 this.changeData();
-            };
-        /**
-         * @return {?}
-         */
-        TableDataService.prototype.getLimit = /**
-         * @return {?}
-         */
-            function () {
-                return this.limit;
             };
         /**
          * @return {?}
@@ -909,13 +945,15 @@
                 return this.schema;
             };
         /**
+         * @param {?} index
          * @return {?}
          */
-        TableDataService.prototype.getRows = /**
+        TableDataService.prototype.generateId = /**
+         * @param {?} index
          * @return {?}
          */
-            function () {
-                return this.data;
+            function (index) {
+                return Math.round((new Date()).getTime() / 1000) + index;
             };
         /**
          * @param {?} data
@@ -928,8 +966,23 @@
          * @return {?}
          */
             function (data, schema) {
-                this._data = data;
-                this.data = this.arrayToChunksPipe.transform(this.setColumns(schema, this._data), this._getLimit());
+                var _this = this;
+                // Generate row _id
+                if (data[0] && !data[0]._id) {
+                    this.internalData = data.map(( /**
+                     * @param {?} item
+                     * @param {?} index
+                     * @return {?}
+                     */function (item, index) {
+                        item._id = _this.generateId(index);
+                        return item;
+                    }));
+                }
+                else {
+                    this.internalData = data;
+                }
+                this.data = this.arrayToChunksPipe
+                    .transform(this.setColumns(schema, this.internalData), this._getLimit());
                 this.schema = schema;
                 this.changeData();
             };
@@ -955,15 +1008,6 @@
                 this.changeData();
             };
         /**
-         * @return {?}
-         */
-        TableDataService.prototype.getNumberOfPages = /**
-         * @return {?}
-         */
-            function () {
-                return this.data.length;
-            };
-        /**
          * @protected
          * @return {?}
          */
@@ -974,14 +1018,13 @@
             function () {
                 /** @type {?} */
                 var data = this.data[this.pageNumber];
-                this._tableData = {
+                this.internalTableData = {
                     currentPage: this.pageNumber,
                     data: data,
                     header: this.schema,
                     numberOfPages: this.data.length,
                 };
-                console.log('table id', this.tableId);
-                this.tableData.next(this._tableData);
+                this.tableData.next(this.internalTableData);
             };
         /**
          * @protected
@@ -996,7 +1039,7 @@
                     return this.limit;
                 }
                 else {
-                    return this._data.length;
+                    return this.internalData.length;
                 }
             };
         /**
@@ -1038,80 +1081,97 @@
                 return newRows;
             };
         /**
-         * @protected
          * @param {?} data
          * @return {?}
          */
-        TableDataService.prototype.itemEdit = /**
-         * @protected
+        TableDataService.prototype.itemAdd = /**
          * @param {?} data
          * @return {?}
          */
             function (data) {
-                this.data = this.data.map(( /**
-                 * @param {?} item
-                 * @return {?}
-                 */function (item) {
-                    if (item['_id'] === data.row._id) {
-                        return data.row;
-                    }
-                    return item;
-                }));
-                this.dataChange.next({
-                    type: 'edit',
-                    data: data.row
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        this.internalData.push(data);
+                        this.dataChange$.next({
+                            type: 'add',
+                            data: data
+                        });
+                        return [2 /*return*/];
+                    });
                 });
             };
         /**
-         * @protected
+         * @param {?} data
+         * @return {?}
+         */
+        TableDataService.prototype.itemEdit = /**
+         * @param {?} data
+         * @return {?}
+         */
+            function (data) {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        this.internalData = this.internalData
+                            .map(( /**
+                     * @param {?} item
+                     * @return {?}
+                     */function (item) {
+                            if (item._id === data._id) {
+                                return data;
+                            }
+                            return item;
+                        }));
+                        this.dataChange$.next({
+                            type: 'edit',
+                            data: data
+                        });
+                        return [2 /*return*/];
+                    });
+                });
+            };
+        /**
          * @param {?} id
          * @return {?}
          */
         TableDataService.prototype.itemDelete = /**
-         * @protected
          * @param {?} id
          * @return {?}
          */
             function (id) {
-                this.dataChange.next({
-                    type: 'delete',
-                    data: id
+                return __awaiter(this, void 0, void 0, function () {
+                    var index;
+                    return __generator(this, function (_a) {
+                        index = this.internalData
+                            .findIndex(( /**
+                     * @param {?} item
+                     * @return {?}
+                     */function (item) { return item._id === id; }));
+                        if (index < 0) {
+                            return [2 /*return*/, false];
+                        }
+                        this.internalData.splice(index, 1);
+                        this.dataChange$.next({
+                            data: id,
+                            type: 'delete'
+                        });
+                        return [2 /*return*/];
+                    });
                 });
             };
         /**
-         * @protected
-         * @param {?} item
-         * @return {?}
-         */
-        TableDataService.prototype.resolveItemPagePosition = /**
-         * @protected
-         * @param {?} item
-         * @return {?}
-         */
-            function (item) {
-            };
-        /**
-         * @protected
          * @param {?} orderBy
          * @return {?}
          */
         TableDataService.prototype.reorder = /**
-         * @protected
          * @param {?} orderBy
          * @return {?}
          */
             function (orderBy) {
-                if (this.orderBy === orderBy) {
-                    this.orderDir = !this.orderDir;
-                }
-                else {
-                    this.orderBy = orderBy;
-                }
+                this.orderBy === orderBy ? this.orderDir = !this.orderDir : this.orderBy = orderBy;
                 this.pageNumber = 0;
-                this.data = null;
                 this.data = this.arrayToChunksPipe
                     .transform(this.setColumns(this.schema, this.ng2OrderPipe
-                    .transform(this._data, this.orderBy, this.orderDir)), this._getLimit());
+                    .transform(this.internalData, this.orderBy, this.orderDir)), this._getLimit());
                 this.changeData();
             };
         TableDataService.decorators = [
@@ -1120,7 +1180,7 @@
         /** @nocollapse */
         TableDataService.ctorParameters = function () {
             return [
-                { type: TableMessagingService },
+                { type: TableService },
                 { type: ArrayToChunksPipe },
                 { type: ng2OrderPipe.Ng2OrderPipe }
             ];
@@ -1133,13 +1193,12 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var TableRowComponent = /** @class */ (function () {
-        function TableRowComponent(tableMessagingService, tableDataService) {
-            this.tableMessagingService = tableMessagingService;
+        function TableRowComponent(tableDataService) {
             this.tableDataService = tableDataService;
             this.isEditable = false;
             this.isEditing = false;
-            this.deleteActivated = false;
             this.select = new i0.EventEmitter();
+            this.deleteActivated = false;
         }
         /**
          * @return {?}
@@ -1148,9 +1207,6 @@
          * @return {?}
          */
             function () {
-                /**
-                 * Clone global data to local data
-                 */
                 this._data = Object.assign({}, this.data);
             };
         /**
@@ -1210,17 +1266,6 @@
                 return this.tableDataService.getHeaders()[key].isEditable;
             };
         /**
-         * @param {?} key
-         * @return {?}
-         */
-        TableRowComponent.prototype.getDataByKey = /**
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                return this.data[key];
-            };
-        /**
          * @return {?}
          */
         TableRowComponent.prototype.cancel = /**
@@ -1238,27 +1283,34 @@
          */
             function () {
                 this.isEditing = !this.isEditing;
-                if (this.isEditing) {
-                    this.tableMessagingService.notify({
-                        type: CONTEXTS.DEFAULT,
-                        message: MESSAGES.ITEM_EDIT_STARTED
-                    });
-                }
             };
         /**
+         * @param {?} type
          * @return {?}
          */
         TableRowComponent.prototype.save = /**
+         * @param {?} type
          * @return {?}
          */
-            function () {
-                this.isEditing = false;
-                this.tableMessagingService.notify({
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_EDIT,
-                    data: {
-                        row: this._data
-                    }
+            function (type) {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.isEditing = false;
+                                if (!(type === 'add'))
+                                    return [3 /*break*/, 2];
+                                return [4 /*yield*/, this.tableDataService.itemAdd(this.data)];
+                            case 1:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 2: return [4 /*yield*/, this.tableDataService.itemEdit(this._data)];
+                            case 3:
+                                _a.sent();
+                                _a.label = 4;
+                            case 4: return [2 /*return*/];
+                        }
+                    });
                 });
             };
         /**
@@ -1268,23 +1320,20 @@
          * @return {?}
          */
             function () {
-                this.deleteActivated = !this.deleteActivated;
-                this.tableMessagingService.notify({
-                    type: CONTEXTS.DEFAULT,
-                    message: MESSAGES.ITEM_DELETE,
-                    data: this._data
-                });
+                this.deleteActivated = true;
+                if (confirm("Delete \"" + this.data.title + "\"?")) {
+                    this.tableDataService.itemDelete(this.data._id);
+                }
             };
         TableRowComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-table-row, [ml-table-row]',
-                        template: "<td\n        ml-table-column\n        [hidden]=\"key === '_id'\"\n        *ngFor=\"let key of getColumnsData(); trackBy: trackColumn\"\n        [(data)]=\"_data[key]\"\n        [columnType]=\"getColumnTypeByKey(key)\"\n        [isEditing]=\"isEditing && getColumnIsEditableByKey(key)\"\n        (onClick)=\"elementSelected()\"\n></td>\n<td *ngIf=\"isEditable\">\n  <button\n          class=\"Button Button--small Button--primary\"\n          (click)=\"edit()\"\n          *ngIf=\"!isEditing\"\n  >Edit</button>\n  <button class=\"Button Button--small\" (click)=\"delete()\" *ngIf=\"!isEditing\">Delete</button>\n  <button class=\"Button Button--small Button--primary\" (click)=\"save()\" *ngIf=\"isEditing\">Save</button>\n  <button class=\"Button Button--small\" (click)=\"cancel()\" *ngIf=\"isEditing\">Cancel</button>\n</td>\n"
+                        template: "<td\n        ml-table-column\n        [hidden]=\"key === '_id'\"\n        *ngFor=\"let key of getColumnsData(); trackBy: trackColumn\"\n        [(data)]=\"_data[key]\"\n        [columnType]=\"getColumnTypeByKey(key)\"\n        [isEditing]=\"isEditing && getColumnIsEditableByKey(key)\"\n        (click)=\"elementSelected()\"\n></td>\n<td *ngIf=\"isEditable && !isEditing\">\n  <button\n          class=\"table-button\"\n          (click)=\"edit()\"\n  >Edit</button>\n  <button class=\"table-button\" (click)=\"delete()\">Delete</button>\n</td>\n<td *ngIf=\"isEditing\">\n  <button class=\"table-button\" (click)=\"save('edit')\" *ngIf=\"isEditing\">Save</button>\n  <button class=\"table-button\" (click)=\"cancel()\" *ngIf=\"isEditing\">Cancel</button>\n</td>\n"
                     }] }
         ];
         /** @nocollapse */
         TableRowComponent.ctorParameters = function () {
             return [
-                { type: TableMessagingService },
                 { type: TableDataService }
             ];
         };
@@ -1292,7 +1341,6 @@
             data: [{ type: i0.Input }],
             isEditable: [{ type: i0.Input }],
             isEditing: [{ type: i0.Input }],
-            deleteActivated: [{ type: i0.Input }],
             select: [{ type: i0.Output }]
         };
         return TableRowComponent;
@@ -1302,50 +1350,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var TableService = /** @class */ (function () {
-        function TableService() {
-            this._tableOptions = {};
-        }
-        /**
-         * @param {?} tableID
-         * @param {?} tableOptions
-         * @return {?}
-         */
-        TableService.prototype.setTableOptions = /**
-         * @param {?} tableID
-         * @param {?} tableOptions
-         * @return {?}
-         */
-            function (tableID, tableOptions) {
-                this._tableOptions[tableID] = Object.assign({}, tableOptions);
-            };
-        /**
-         * @return {?}
-         */
-        TableService.prototype.getTableOptions = /**
-         * @return {?}
-         */
-            function () {
-                return rxjs.of(this._tableOptions);
-            };
-        TableService.decorators = [
-            { type: i0.Injectable }
-        ];
-        return TableService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var TableComponent = /** @class */ (function () {
-        function TableComponent(tableDataService, tableService, el) {
+        function TableComponent(tableDataService, tableService) {
             this.tableDataService = tableDataService;
             this.tableService = tableService;
-            this.el = el;
             this.tableID = 'default';
             // Only if we have external page handler
-            this.update = new i0.EventEmitter();
+            this.add = new i0.EventEmitter();
+            this.edit = new i0.EventEmitter();
             this.delete = new i0.EventEmitter();
             this.pageChange = new i0.EventEmitter();
             this.numberOfItemsChange = new i0.EventEmitter();
@@ -1359,43 +1371,36 @@
          */
             function () {
                 var _this = this;
-                this.tableDataService.setTableId(this.tableID);
                 if ((this.tableLimit > 0) && this.tableOptions.isInternalPagination) {
                     this.tableDataService.setLimit(this.tableLimit);
                 }
                 // On data update
-                this.dataChange$ = this.tableDataService.dataChange.subscribe(( /**
-                 * @param {?} data
-                 * @return {?}
-                 */function (data) {
-                    // Emit new data
-                    if (data.type === 'edit') {
-                        _this.update.emit(data.data);
-                    }
-                    if (data.type === 'delete') {
-                        _this.delete.emit(data.data);
-                    }
+                this.dataChange$ = this.tableDataService.dataChange$
+                    .subscribe(( /**
+             * @param {?} data
+             * @return {?}
+             */function (data) {
+                    return _this[data.type].emit(data.data);
                 }));
                 // On new data
                 this.getData$ = this.tableDataService
                     .getData()
-                    .subscribe({
-                    next: ( /**
-                     * @param {?} newData
-                     * @return {?}
-                     */function (newData) {
-                        _this.header = newData.header;
-                        _this.container = newData.data;
-                        if (_this.tableOptions.isInternalPagination) {
-                            _this.numOfPages = newData.numberOfPages;
-                            _this.currentPage = newData.currentPage;
-                        }
-                    })
-                });
+                    .subscribe(( /**
+             * @param {?} newData
+             * @return {?}
+             */function (newData) {
+                    _this.header = newData.header;
+                    _this.container = newData.data;
+                    if (_this.tableOptions.isInternalPagination) {
+                        _this.numOfPages = newData.numberOfPages;
+                        _this.currentPage = newData.currentPage;
+                    }
+                }));
                 if (!this.tableOptions.isInternalPagination) {
                     this.currentPage = 0;
                 }
                 this.tableDataService.setData(this.data, this.tableOptions.schema);
+                this.tableDataService.setLimit(this.tableOptions.numberOfItems[0]);
             };
         /**
          * @param {?} changes
@@ -1407,8 +1412,8 @@
          */
             function (changes) {
                 if (changes.tableOptions) {
-                    this.tableService.setTableOptions(this.tableID, this.tableOptions);
                     this.tableOptions = Object.assign({}, DEFAULT_TABLE_OPTIONS, this.tableOptions);
+                    this.tableService.setOptions(this.tableOptions);
                 }
                 if (changes.data) {
                     this.tableDataService.setData(this.data, this.tableOptions.schema);
@@ -1420,7 +1425,6 @@
                     this.currentPage = this.pageNumber;
                 }
                 if (changes.tableLimit) {
-                    console.log('table limit', changes.tableLimit);
                     this.tableDataService.setLimit(changes.tableLimit.currentValue);
                 }
             };
@@ -1442,9 +1446,9 @@
          * @return {?}
          */
             function (numOfItems) {
-                this.tableLimit = numOfItems;
+                this.tableLimit = parseInt(numOfItems, 10);
                 this.tableDataService.setLimit(this.tableLimit);
-                this.numberOfItemsChange.emit(numOfItems);
+                this.numberOfItemsChange.emit(this.tableLimit);
             };
         /**
          * @return {?}
@@ -1454,13 +1458,11 @@
          */
             function () {
                 if (this.tableOptions.isInternalPagination) {
-                    /** @type {?} */
-                    var newPage = this.currentPage + 1;
-                    this.tableDataService.goToPage(newPage);
+                    this.tableDataService.goToPage(this.currentPage + 1);
                 }
                 else {
                     this.pageChange.emit({
-                        direction: PAGINATION.NEXT,
+                        direction: PAGINATION.next,
                     });
                 }
             };
@@ -1472,13 +1474,11 @@
          */
             function () {
                 if (this.tableOptions.isInternalPagination) {
-                    /** @type {?} */
-                    var newPage = this.currentPage - 1;
-                    this.tableDataService.goToPage(newPage);
+                    this.tableDataService.goToPage(this.currentPage - 1);
                 }
                 else {
                     this.pageChange.emit({
-                        direction: PAGINATION.PREVIOUS,
+                        direction: PAGINATION.previous,
                     });
                 }
             };
@@ -1495,17 +1495,16 @@
         TableComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-table, [ml-table]',
-                        template: "<div ngClass=\"wrapper\">\n  <table\n          [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n  >\n    <thead ml-table-header [data]=\"header\" ngClass=\"header\" [isEditable]=\"tableOptions.isEditable\"></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isReordable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody ml-table-container *ngIf=\"!tableOptions.isReordable\" [isEditable]=\"tableOptions.isEditable\" [data]=\"container\" class=\"Table__Container\"></tbody>\n  </table>\n</div>\n<div ngClass=\"table-navigation\">\n  <button [disabled]=\"isLoading\" ngClass=\"button\" (click)=\"onPreviousPage()\" *ngIf=\"currentPage > 0\">Previous page</button>\n  <span ngClass=\"page-information\">{{ getCurrentPage() }} / {{ numOfPages }}</span>\n  <button [disabled]=\"isLoading\" ngClass=\"button\" (click)=\"onNextPage()\" *ngIf=\"currentPage < numOfPages - 1\">Next page</button>\n</div>\n<div *ngIf=\"tableOptions.canChangeNumberOfItems\">\n  <div class=\"form-Item\">\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n      <option value=\"50\">50</option>\n      <option value=\"100\">100</option>\n      <option value=\"200\">200</option>\n    </select>\n  </div>\n</div>\n",
+                        template: "<table\n        [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n>\n    <thead\n            ml-table-header\n            [data]=\"header\"\n            class=\"header\"\n            [isEditable]=\"tableOptions.isEditable\"\n    ></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isDraggable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody\n            ml-table-container\n            class=\"table-container\"\n            *ngIf=\"!tableOptions.isDraggable\"\n            [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n    ></tbody>\n</table>\n<div class=\"table-navigation\">\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onPreviousPage()\"\n            *ngIf=\"currentPage > 0\"\n    >\n        Previous page\n    </button>\n    <span class=\"page-information\">\n        {{ getCurrentPage() }} / {{ numOfPages }}\n    </span>\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onNextPage()\"\n            *ngIf=\"currentPage < numOfPages - 1\"\n    >\n        Next page\n    </button>\n</div>\n<div\n        class=\"number-of-items\"\n        *ngIf=\"tableOptions.canChangeNumberOfItems\"\n>\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n        <option\n                *ngFor=\"let value of tableOptions.numberOfItems\"\n                [value]=\"value\"\n        >{{value}}</option>\n    </select>\n</div>\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
-                        providers: [TableDataService, TableService, TableMessagingService]
+                        providers: [TableDataService, TableService]
                     }] }
         ];
         /** @nocollapse */
         TableComponent.ctorParameters = function () {
             return [
                 { type: TableDataService },
-                { type: TableService },
-                { type: i0.ElementRef }
+                { type: TableService }
             ];
         };
         TableComponent.propDecorators = {
@@ -1515,7 +1514,8 @@
             tableLimit: [{ type: i0.Input }],
             numberOfPages: [{ type: i0.Input }],
             pageNumber: [{ type: i0.Input }],
-            update: [{ type: i0.Output }],
+            add: [{ type: i0.Output }],
+            edit: [{ type: i0.Output }],
             delete: [{ type: i0.Output }],
             pageChange: [{ type: i0.Output }],
             numberOfItemsChange: [{ type: i0.Output }],
@@ -1998,7 +1998,8 @@
         DropItemsComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'ml-drop-items, [ml-drop-items]',
-                        template: "<ul *ngIf=\"isOpened\" ngClass=\"drop-items\">\n    <li *ngFor=\"let item of getItems(); let i = index;\" ngClass=\"drop-item\">\n\n        <button\n                ngClass=\"button-toggle\"\n                *ngIf=\"hasChildren(item.id)\"\n                (click)=\"toggleChildren(i)\"\n        >{{childrenVisible[i] ? '-' : '+'}}</button>\n\n        <span (click)=\"selectItem(item)\" ngClass=\"title {{!hasChildren(item.id) ? 'no-children' : null}}\">{{item.title}}</span>\n        <ml-drop-items\n                [parentId]=\"item.id\"\n                [isOpened]=\"childrenVisible[i]\"\n                ngClass=\"drop-items-children\"\n        ></ml-drop-items>\n    </li>\n</ul>\n"
+                        template: "<ul *ngIf=\"isOpened\" ngClass=\"drop-items\">\n    <li *ngFor=\"let item of getItems(); let i = index;\" ngClass=\"drop-item\">\n\n        <button\n                ngClass=\"button-toggle\"\n                *ngIf=\"hasChildren(item.id)\"\n                (click)=\"toggleChildren(i)\"\n        >{{childrenVisible[i] ? '-' : '+'}}</button>\n\n        <span (click)=\"selectItem(item)\" ngClass=\"title {{!hasChildren(item.id) ? 'no-children' : null}}\">{{item.title}}</span>\n        <ml-drop-items\n                [parentId]=\"item.id\"\n                [isOpened]=\"childrenVisible[i]\"\n                ngClass=\"drop-items-children\"\n        ></ml-drop-items>\n    </li>\n</ul>\n",
+                        providers: []
                     }] }
         ];
         /** @nocollapse */
@@ -2018,15 +2019,15 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var AliasComponent = /** @class */ (function (_super) {
-        __extends(AliasComponent, _super);
-        function AliasComponent() {
+    var SlugComponent = /** @class */ (function (_super) {
+        __extends(SlugComponent, _super);
+        function SlugComponent() {
             return _super.call(this) || this;
         }
         /**
          * @return {?}
          */
-        AliasComponent.prototype.update = /**
+        SlugComponent.prototype.update = /**
          * @return {?}
          */
             function () {
@@ -2040,7 +2041,7 @@
          * @param {?} obj
          * @return {?}
          */
-        AliasComponent.prototype.writeValue = /**
+        SlugComponent.prototype.writeValue = /**
          * @param {?} obj
          * @return {?}
          */
@@ -2051,7 +2052,7 @@
          * @param {?} fn
          * @return {?}
          */
-        AliasComponent.prototype.registerOnChange = /**
+        SlugComponent.prototype.registerOnChange = /**
          * @param {?} fn
          * @return {?}
          */
@@ -2062,27 +2063,27 @@
          * @param {?} fn
          * @return {?}
          */
-        AliasComponent.prototype.registerOnTouched = /**
+        SlugComponent.prototype.registerOnTouched = /**
          * @param {?} fn
          * @return {?}
          */
             function (fn) {
-                this.onTouch = fn;
+                this.onTouched = fn;
             };
-        AliasComponent.decorators = [
+        SlugComponent.decorators = [
             { type: i0.Component, args: [{
-                        selector: 'ml-alias',
-                        template: "<input type=\"text\" #element (keyup)=\"update()\" (focus)=\"onTouch(true)\" [value]=\"value\" />\n",
-                        providers: [{ provide: forms.NG_VALUE_ACCESSOR, useExisting: AliasComponent, multi: true }]
+                        selector: 'ml-slug',
+                        template: "<input type=\"text\" #element (keyup)=\"update()\" [value]=\"value\" />\n",
+                        providers: [{ provide: forms.NG_VALUE_ACCESSOR, useExisting: SlugComponent, multi: true }]
                     }] }
         ];
         /** @nocollapse */
-        AliasComponent.ctorParameters = function () { return []; };
-        AliasComponent.propDecorators = {
+        SlugComponent.ctorParameters = function () { return []; };
+        SlugComponent.propDecorators = {
             value: [{ type: i0.Input }],
             element: [{ type: i0.ViewChild, args: ['element',] }]
         };
-        return AliasComponent;
+        return SlugComponent;
     }(forms.FormControl));
 
     /**
@@ -2223,7 +2224,7 @@
                             SwitchComponent,
                             DropComponent,
                             DropItemsComponent,
-                            AliasComponent,
+                            SlugComponent,
                             PartsComponent
                         ],
                         imports: [
@@ -2233,7 +2234,7 @@
                             platformBrowser.BrowserModule
                         ],
                         exports: [
-                            AliasComponent,
+                            SlugComponent,
                             SwitchComponent,
                             PartsComponent,
                             DropComponent,
@@ -2248,6 +2249,60 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var TableHeaderComponent = /** @class */ (function () {
+        function TableHeaderComponent(tableDataService) {
+            this.tableDataService = tableDataService;
+            this.data = {};
+            this.isEditable = false;
+        }
+        /**
+         * @return {?}
+         */
+        TableHeaderComponent.prototype.getData = /**
+         * @return {?}
+         */
+            function () {
+                if (this.data) {
+                    return Object.keys(this.data) || [];
+                }
+                else {
+                    return [];
+                }
+            };
+        /**
+         * @param {?} label
+         * @return {?}
+         */
+        TableHeaderComponent.prototype.sortItems = /**
+         * @param {?} label
+         * @return {?}
+         */
+            function (label) {
+                this.tableDataService.reorder(label);
+            };
+        TableHeaderComponent.decorators = [
+            { type: i0.Component, args: [{
+                        selector: 'ml-table-header, [ml-table-header]',
+                        template: "<tr class=\"header-row\">\n    <th\n            [hidden]=\"columnName === '_id'\"\n            *ngFor=\"let columnName of getData()\"\n            class=\"column\">\n        <button\n                (click)=\"sortItems(columnName)\"\n                class=\"table-order-button\"\n                title=\"Click to reorder\"\n        >{{data[columnName].title}}\n        </button>\n    </th>\n    <th *ngIf=\"isEditable\">&nbsp;</th>\n</tr>\n"
+                    }] }
+        ];
+        /** @nocollapse */
+        TableHeaderComponent.ctorParameters = function () {
+            return [
+                { type: TableDataService }
+            ];
+        };
+        TableHeaderComponent.propDecorators = {
+            data: [{ type: i0.Input }],
+            isEditable: [{ type: i0.Input }]
+        };
+        return TableHeaderComponent;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var TableModule = /** @class */ (function () {
         function TableModule() {
         }
@@ -2256,7 +2311,6 @@
                         declarations: [
                             TableColumnComponent,
                             TableContainerComponent,
-                            TableFooterComponent,
                             TableHeaderComponent,
                             TableRowComponent,
                             TableComponent
@@ -2269,7 +2323,6 @@
                         exports: [
                             TableColumnComponent,
                             TableContainerComponent,
-                            TableFooterComponent,
                             TableHeaderComponent,
                             TableRowComponent,
                             TableComponent
@@ -2285,6 +2338,9 @@
      */
     var MessageComponent = /** @class */ (function () {
         function MessageComponent() {
+            this.hasTimeOut = false;
+            this.timeout = 1000;
+            this.close = new i0.EventEmitter();
         }
         /**
          * @return {?}
@@ -2293,6 +2349,14 @@
          * @return {?}
          */
             function () {
+                var _this = this;
+                if (this.hasTimeOut) {
+                    setTimeout(( /**
+                     * @return {?}
+                     */function () {
+                        _this.close.emit(true);
+                    }), this.timeout);
+                }
             };
         /**
          * @return {?}
@@ -2303,18 +2367,30 @@
             function () {
                 return "message " + this.type;
             };
+        /**
+         * @return {?}
+         */
+        MessageComponent.prototype.onClose = /**
+         * @return {?}
+         */
+            function () {
+                this.close.emit(true);
+            };
         MessageComponent.decorators = [
             { type: i0.Component, args: [{
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         selector: 'ml-message',
-                        template: "<div [ngClass]=\"getClass()\" *ngIf=\"message\">{{message}}</div>\n"
+                        template: "<div [ngClass]=\"getClass()\" *ngIf=\"message\">\n    <span ngClass=\"message-text\">{{message}}</span>\n    <button ngClass=\"message-close\" (click)=\"onClose()\">X</button>\n</div>\n"
                     }] }
         ];
         /** @nocollapse */
         MessageComponent.ctorParameters = function () { return []; };
         MessageComponent.propDecorators = {
             message: [{ type: i0.Input }],
-            type: [{ type: i0.Input }]
+            type: [{ type: i0.Input }],
+            hasTimeOut: [{ type: i0.Input }],
+            timeout: [{ type: i0.Input }],
+            close: [{ type: i0.Output }]
         };
         return MessageComponent;
     }());
@@ -2342,6 +2418,98 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var VirtualGridService = /** @class */ (function () {
+        function VirtualGridService() {
+            var _this = this;
+            this.visible = false;
+            this.$visible = new rxjs.Subject();
+            window.onkeyup = ( /**
+             * @param {?} e
+             * @return {?}
+             */function (e) {
+                if (e.ctrlKey && e.code === 'KeyG') {
+                    _this.visible = !_this.visible;
+                    _this.$visible.next(_this.visible);
+                }
+            });
+        }
+        VirtualGridService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        VirtualGridService.ctorParameters = function () { return []; };
+        return VirtualGridService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var VirtualGridComponent = /** @class */ (function () {
+        function VirtualGridComponent(virtualGridService) {
+            this.virtualGridService = virtualGridService;
+            this.maxRows = 24;
+            this.visible = false;
+        }
+        /**
+         * @return {?}
+         */
+        VirtualGridComponent.prototype.ngOnInit = /**
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                this.range = new Array(this.maxRows).fill(null);
+                this.$visible = this.virtualGridService.$visible
+                    .subscribe(( /**
+             * @param {?} visible
+             * @return {?}
+             */function (visible) { return _this.visible = visible; }));
+            };
+        /**
+         * @param {?} e
+         * @return {?}
+         */
+        VirtualGridComponent.prototype.toggle = /**
+         * @param {?} e
+         * @return {?}
+         */
+            function (e) {
+                console.log(e);
+            };
+        /**
+         * @return {?}
+         */
+        VirtualGridComponent.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                this.$visible.unsubscribe();
+            };
+        VirtualGridComponent.decorators = [
+            { type: i0.Component, args: [{
+                        selector: 'ml-virtual-grid',
+                        template: "<div [ngClass]=\"{\n'virtual-grid': true,\n'-visible': visible\n}\" (keyup)=\"toggle($event)\">\n  <div class=\"grid-container\">\n    <div class=\"grid\">\n      <span *ngFor=\"let i of range\"></span>\n    </div>\n  </div>\n</div>\n",
+                        providers: [VirtualGridService],
+                        styles: [""]
+                    }] }
+        ];
+        /** @nocollapse */
+        VirtualGridComponent.ctorParameters = function () {
+            return [
+                { type: VirtualGridService }
+            ];
+        };
+        VirtualGridComponent.propDecorators = {
+            maxRows: [{ type: i0.Input }]
+        };
+        return VirtualGridComponent;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var MicroLayoutLibModule = /** @class */ (function () {
         function MicroLayoutLibModule() {
         }
@@ -2349,7 +2517,8 @@
             { type: i0.NgModule, args: [{
                         declarations: [
                             ArrayToChunksPipe,
-                            MicroLayoutLibComponent
+                            MicroLayoutLibComponent,
+                            VirtualGridComponent
                         ],
                         imports: [
                             FormModule,
@@ -2370,7 +2539,8 @@
                             ProgressModule,
                             TableModule,
                             FormModule,
-                            MessageModule
+                            MessageModule,
+                            VirtualGridComponent
                         ],
                         providers: [ArrayToChunksPipe, ng2OrderPipe.Ng2OrderPipe]
                     },] }
@@ -2391,38 +2561,38 @@
     exports.MicroLayoutLibService = MicroLayoutLibService;
     exports.MicroLayoutLibComponent = MicroLayoutLibComponent;
     exports.MicroLayoutLibModule = MicroLayoutLibModule;
-    exports.ɵj = ButtonComponent;
-    exports.ɵi = ButtonsModule;
-    exports.ɵo = CardContainerComponent;
-    exports.ɵn = CardFooterComponent;
-    exports.ɵm = CardHeaderComponent;
-    exports.ɵk = CardModule;
-    exports.ɵl = CardComponent;
-    exports.ɵg = AliasComponent;
-    exports.ɵf = DropItemsComponent;
-    exports.ɵd = DropComponent;
-    exports.ɵe = DropService;
-    exports.ɵb = FormModule;
-    exports.ɵh = PartsComponent;
-    exports.ɵc = SwitchComponent;
-    exports.ɵp = LinkModule;
-    exports.ɵq = LinkComponent;
+    exports.ɵl = ButtonComponent;
+    exports.ɵk = ButtonsModule;
+    exports.ɵr = CardContainerComponent;
+    exports.ɵq = CardFooterComponent;
+    exports.ɵp = CardHeaderComponent;
+    exports.ɵm = CardModule;
+    exports.ɵo = CardService;
+    exports.ɵn = CardComponent;
+    exports.ɵh = DropItemsComponent;
+    exports.ɵf = DropComponent;
+    exports.ɵg = DropService;
+    exports.ɵd = FormModule;
+    exports.ɵj = PartsComponent;
+    exports.ɵi = SlugComponent;
+    exports.ɵe = SwitchComponent;
+    exports.ɵs = LinkModule;
+    exports.ɵt = LinkComponent;
     exports.ɵbe = MessageModule;
     exports.ɵbf = MessageComponent;
     exports.ɵa = ArrayToChunksPipe;
-    exports.ɵr = ProgressModule;
-    exports.ɵs = ProgressComponent;
-    exports.ɵz = InfoService;
-    exports.ɵu = TableColumnComponent;
-    exports.ɵv = TableContainerComponent;
-    exports.ɵbb = TableDataService;
-    exports.ɵw = TableFooterComponent;
-    exports.ɵx = TableHeaderComponent;
-    exports.ɵy = TableMessagingService;
-    exports.ɵba = TableRowComponent;
-    exports.ɵt = TableModule;
-    exports.ɵbd = TableService;
-    exports.ɵbc = TableComponent;
+    exports.ɵu = ProgressModule;
+    exports.ɵv = ProgressComponent;
+    exports.ɵx = TableColumnComponent;
+    exports.ɵy = TableContainerComponent;
+    exports.ɵba = TableDataService;
+    exports.ɵz = TableHeaderComponent;
+    exports.ɵbc = TableRowComponent;
+    exports.ɵw = TableModule;
+    exports.ɵbb = TableService;
+    exports.ɵbd = TableComponent;
+    exports.ɵb = VirtualGridComponent;
+    exports.ɵc = VirtualGridService;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

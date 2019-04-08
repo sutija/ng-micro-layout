@@ -1,22 +1,19 @@
-/**
- * @todo Do not sort when edit is activated
- */
-import { OnInit, OnChanges, OnDestroy, ElementRef, EventEmitter } from '@angular/core';
-import { TableService } from '../table.service';
+import { OnInit, OnChanges, OnDestroy, EventEmitter } from '@angular/core';
 import { TableRow, TableOptions } from '../table.interface';
 import { TableDataService } from '../table-data.service';
+import { TableService } from '../table.service';
 export declare class TableComponent implements OnInit, OnChanges, OnDestroy {
     private tableDataService;
     private tableService;
-    protected el: ElementRef;
     tableID: string;
     data: Array<TableRow>;
     tableOptions: TableOptions;
     tableLimit: number;
     numberOfPages: number;
     pageNumber: number;
-    update: EventEmitter<any>;
-    delete: EventEmitter<number>;
+    add: EventEmitter<any>;
+    edit: EventEmitter<any>;
+    delete: EventEmitter<any>;
     pageChange: EventEmitter<any>;
     numberOfItemsChange: EventEmitter<number>;
     isLoading: Boolean;
@@ -26,11 +23,11 @@ export declare class TableComponent implements OnInit, OnChanges, OnDestroy {
     numOfPages: any;
     dataChange$: any;
     getData$: any;
-    constructor(tableDataService: TableDataService, tableService: TableService, el: ElementRef);
+    constructor(tableDataService: TableDataService, tableService: TableService);
     ngOnInit(): void;
     ngOnChanges(changes: any): void;
     getCurrentPage(): any;
-    onChangeNumberOfItems(numOfItems: any): void;
+    onChangeNumberOfItems(numOfItems: string): void;
     onNextPage(): void;
     onPreviousPage(): void;
     ngOnDestroy(): void;
