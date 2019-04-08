@@ -6,36 +6,45 @@ ml-table {
     overflow-x: auto;
     width: 100%;
   }
-  
+
   .table {
     background-color: $colorLight;
     border-collapse: collapse;
     transition: opacity ease 0.6s;
     width: 100%;
-  
+
     &-isLoading {
       opacity: .2;
     }
   }
-  
+
   .header {
-    background-color: $colorDefaultLight;
+    background-color: $colorDefaultLighter;
   }
-  
+
   .table-navigation {
     align-items: center;
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
-  
+
     .page-information {
 
     }
-  
-    .button {
-      padding: 10px 0;
+
+    .table-button {
+      padding: 5px;
     }
-  }  
+  }
+
+  .number-of-items {
+    padding-top: 15px;
+    text-align: right;
+
+    label {
+      margin-right: 10px;
+    }
+  }
 }
 
 [ml-table-column] {
@@ -73,14 +82,14 @@ ml-table {
 [ml-table-header] {
   .column {
     font-weight: bold;
-    padding: 10px;
+    padding: 5px;
     text-align: left;
-  
+
     button {
       background-color: transparent;
       border: none;
       cursor: pointer;
       padding: 0
     }
-  }  
+  }
 }

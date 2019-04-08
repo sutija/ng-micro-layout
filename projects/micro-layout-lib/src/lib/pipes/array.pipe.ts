@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ArrayToChunksPipe implements PipeTransform {
     transform(array: Array<any>, numberOfItems: number): any {
-        console.log(array, numberOfItems);
         return array.map((e, i) => {
             if (i % numberOfItems === 0) {
                 return array.slice(i, i + numberOfItems);

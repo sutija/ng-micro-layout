@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
-import {TableMessagingService} from '../table-messaging.service';
 import {TableDataService} from '../table-data.service';
-import {CONTEXT, MESSAGES} from '../table.constants';
 
 @Component({
   selector: 'ml-table-row, [ml-table-row]',
@@ -16,8 +14,7 @@ export class TableRowComponent implements OnChanges {
   public _data;
   deleteActivated = false;
 
-  constructor(private tableMessagingService: TableMessagingService,
-              private tableDataService: TableDataService) {
+  constructor(private tableDataService: TableDataService) {
   }
 
   ngOnChanges() {
@@ -55,30 +52,21 @@ export class TableRowComponent implements OnChanges {
 
   edit() {
     this.isEditing = !this.isEditing;
-    if (this.isEditing) {
-      this.tableMessagingService.notify({
-        type: CONTEXT.DEFAULT,
-        message: MESSAGES.ITEM_EDIT_STARTED
-      });
-    }
   }
 
-  save() {
+  async save(type) {
     this.isEditing = false;
-
-    this.tableMessagingService.notify({
-      type: CONTEXT.DEFAULT,
-      message: MESSAGES.ITEM_EDIT,
-      data: {
-        row: this._data
-      }
-    });
+    if (type === 'add') {
+      await this.tableDataService.itemAdd(this.data);
+    } else {
+      await this.tableDataService.itemEdit(this._data);
+    }
   }
 
   delete() {
     this.deleteActivated = true;
 
-    if (confirm('Delete?')) {
+    if (confirm(`Delete "${this.data.title}"?`)) {
       this.tableDataService.itemDelete(this.data._id);
     }
   }

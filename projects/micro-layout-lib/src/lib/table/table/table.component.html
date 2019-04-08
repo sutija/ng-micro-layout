@@ -4,28 +4,56 @@
         'table': true
     }"
 >
-    <thead ml-table-header [data]="header" ngClass="header" [isEditable]="tableOptions.isEditable"></thead>
+    <thead
+            ml-table-header
+            [data]="header"
+            class="header"
+            [isEditable]="tableOptions.isEditable"
+    ></thead>
     <tbody ml-table-container
            *ngIf="tableOptions.isDraggable"
            [isEditable]="tableOptions.isEditable"
            [data]="container"
            ngClass="table-container"
     ></tbody>
-    <tbody ml-table-container *ngIf="!tableOptions.isDraggable" [isEditable]="tableOptions.isEditable"
-           [data]="container" class="table-container"></tbody>
+    <tbody
+            ml-table-container
+            class="table-container"
+            *ngIf="!tableOptions.isDraggable"
+            [isEditable]="tableOptions.isEditable"
+           [data]="container"
+    ></tbody>
 </table>
-<div ngClass="table-navigation">
-    <button [disabled]="isLoading" ngClass="button" (click)="onPreviousPage()" *ngIf="currentPage > 0">
+<div class="table-navigation">
+    <button
+            [disabled]="isLoading"
+            class="table-button"
+            (click)="onPreviousPage()"
+            *ngIf="currentPage > 0"
+    >
         Previous page
     </button>
-    <span ngClass="page-information">{{ getCurrentPage() }} / {{ numOfPages }}</span>
-    <button [disabled]="isLoading" ngClass="button" (click)="onNextPage()" *ngIf="currentPage < numOfPages - 1">
+    <span class="page-information">
+        {{ getCurrentPage() }} / {{ numOfPages }}
+    </span>
+    <button
+            [disabled]="isLoading"
+            class="table-button"
+            (click)="onNextPage()"
+            *ngIf="currentPage < numOfPages - 1"
+    >
         Next page
     </button>
 </div>
-<div *ngIf="tableOptions.canChangeNumberOfItems" ngClass="number-of-items">
+<div
+        class="number-of-items"
+        *ngIf="tableOptions.canChangeNumberOfItems"
+>
     <label># of items</label>
     <select (change)="onChangeNumberOfItems($event.target.value)">
-        <option *ngFor="let value of tableOptions.numberOfItems" [value]="value">{{value}}</option>
+        <option
+                *ngFor="let value of tableOptions.numberOfItems"
+                [value]="value"
+        >{{value}}</option>
     </select>
 </div>

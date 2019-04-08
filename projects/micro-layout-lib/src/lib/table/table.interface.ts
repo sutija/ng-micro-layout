@@ -85,9 +85,6 @@ export interface TableOptions {
     isEditable?: boolean;
     isSortable?: boolean;
     isDraggable?: boolean;
-    deleteCallback?: TableCallback;
-    editCallback?: TableCallback;
-    addCallback?: TableCallback;
     numberOfItems?: Array<number>;
     schema: TableSchema;
     isInternalPagination?: boolean;

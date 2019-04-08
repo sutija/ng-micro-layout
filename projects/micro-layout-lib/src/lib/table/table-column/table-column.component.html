@@ -1,8 +1,8 @@
 <div
-    *ngIf="data !== null && !isEditing && (columnType !== tableColumnTypes.COMPONENT)"
-    ngClass="column"
+    *ngIf="data !== null && !isEditing && (columnType !== tableColumnTypes.component)"
+    class="column"
 >
-    <span (click)="onElementClick()">{{data}}</span>
+    <span>{{data}}</span>
 </div>
 <div #columnComponent class="component"></div>
 <div
@@ -10,8 +10,8 @@
         *ngIf="data !== null && isEditing && isEditable"
         class="column table-form-element"
 >
-    <textarea *ngSwitchCase="tableColumnTypes.TEXTAREA" [(ngModel)]="data"></textarea>
-    <ml-switch *ngSwitchCase="tableColumnTypes.SWITCH" [(ngModel)]="data"></ml-switch>
+    <textarea *ngSwitchCase="tableColumnTypes.textarea" [(ngModel)]="data"></textarea>
+    <ml-switch *ngSwitchCase="tableColumnTypes.switch" [(ngModel)]="data"></ml-switch>
     <input *ngSwitchDefault type="text" [(ngModel)]="data"/>
 </div>
-<div ngClass="column column-empty" *ngIf="data === null && !isEditing">/</div>
+<div class="column column-empty" *ngIf="data === null && !isEditing">/</div>

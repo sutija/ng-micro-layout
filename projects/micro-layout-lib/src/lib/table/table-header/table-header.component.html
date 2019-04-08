@@ -1,13 +1,14 @@
-<tr ngClass="header-row">
-  <th
-          [hidden]="columnName === '_id'"
-          *ngFor="let columnName of getData()" ngClass="column">
-    <button
-            (click)="sortItems(columnName)"
-            ngClass="table-order-button"
-            title="Click to reorder"
-    >{{data[columnName].title}}
-    </button>
-  </th>
-  <th *ngIf="isEditable">&nbsp;</th>
+<tr class="header-row">
+    <th
+            [hidden]="columnName === '_id'"
+            *ngFor="let columnName of getData()"
+            class="column">
+        <button
+                (click)="sortItems(columnName)"
+                class="table-order-button"
+                title="Click to reorder"
+        >{{data[columnName].title}}
+        </button>
+    </th>
+    <th *ngIf="isEditable">&nbsp;</th>
 </tr>

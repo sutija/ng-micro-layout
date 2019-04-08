@@ -5,7 +5,7 @@
         [(data)]="_data[key]"
         [columnType]="getColumnTypeByKey(key)"
         [isEditing]="isEditing && getColumnIsEditableByKey(key)"
-        (onClick)="elementSelected()"
+        (click)="elementSelected()"
 ></td>
 <td *ngIf="isEditable && !isEditing">
   <button
@@ -15,6 +15,6 @@
   <button class="table-button" (click)="delete()">Delete</button>
 </td>
 <td *ngIf="isEditing">
-  <button class="table-button" (click)="save()" *ngIf="isEditing">Save</button>
+  <button class="table-button" (click)="save('edit')" *ngIf="isEditing">Save</button>
   <button class="table-button" (click)="cancel()" *ngIf="isEditing">Cancel</button>
 </td>

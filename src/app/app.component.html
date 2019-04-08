@@ -17,7 +17,13 @@
     <ml-card class="component-example">
         <ml-card-header>Table example</ml-card-header>
         <ml-card-container>
-            <ml-table [tableOptions]="tableOptions" [data]="tableData"></ml-table>
+            <ml-table
+                    [tableOptions]="tableOptions"
+                    [data]="tableData"
+                    (add)="onAdd($event)"
+                    (edit)="onEdit($event)"
+                    (delete)="onDelete($event)"
+            ></ml-table>
         </ml-card-container>
         <ml-card-footer>Footer</ml-card-footer>
     </ml-card>

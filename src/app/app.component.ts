@@ -21,4 +21,16 @@ export class AppComponent {
   onSubmit(f: NgForm) {
     console.log(f);
   }
+
+  onAdd(event) {
+    console.log('add', event);
+  }
+
+  onEdit(event) {
+    console.log('edit', event);
+  }
+
+  onDelete(event) {
+    console.log('delete', event);
+  }
 }

@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Ng2OrderPipe} from 'ng2-order-pipe';
 import {Subject} from 'rxjs';
-
-import {TableMessagingService} from './table-messaging.service';
 import {ArrayToChunksPipe} from '../pipes/array.pipe';
 import {
     DataChange,
@@ -15,7 +13,7 @@ import {TableService} from './table.service';
 
 @Injectable()
 export class TableDataService {
-    public readonly dataChange: Subject<DataChange> = new Subject();
+    public readonly dataChange$: Subject<DataChange> = new Subject();
     public readonly elementSelected$: Subject<any> = new Subject();
 
     protected tableData: Subject<Table> = new Subject();
@@ -29,8 +27,7 @@ export class TableDataService {
     private data: Array<Array<TableRow>>;
     private internalData: Array<TableRow>;
 
-    constructor(private tableMessagingService: TableMessagingService,
-                private tableService: TableService,
+    constructor(private tableService: TableService,
                 private arrayToChunksPipe: ArrayToChunksPipe,
                 private ng2OrderPipe: Ng2OrderPipe) {
     }
@@ -53,10 +50,16 @@ export class TableDataService {
     }
 
     setData(data: Array<TableRow>, schema: TableSchema) {
-        this.internalData = data.map((item, index) => {
-            item._id = this.generateId(index);
-            return item;
-        });
+        // Generate row _id
+        if (data[0] && !data[0]._id) {
+            this.internalData = data.map((item, index) => {
+                item._id = this.generateId(index);
+                return item;
+            });
+        } else {
+            this.internalData = data;
+        }
+
         this.data = this.arrayToChunksPipe
             .transform(this.setColumns(schema, this.internalData), this._getLimit());
         this.schema = schema;
@@ -107,55 +110,30 @@ export class TableDataService {
     }
 
     async itemAdd(data) {
-        const { addCallback } = this.tableService.getOptions();
-        let updated = false;
-
-        if (addCallback) {
-            updated = await addCallback(data);
-        }
-
-        if (addCallback && !updated) {
-            return false;
-        }
-
         this.internalData.push(data);
 
-        this.dataChange.next({
+        this.dataChange$.next({
             type: 'add',
             data: data
         });
     }
 
     async itemEdit(data) {
-        const { editCallback } = this.tableService.getOptions();
-        let updated = false;
-
-        if (editCallback) {
-            updated = await editCallback(data);
-        }
-
-        if (editCallback && !updated) {
-            return false;
-        }
-
-        this.data = this.data
+        this.internalData = this.internalData
             .map(item => {
-                if (item['_id'] === data.row._id) {
-                    return data.row;
+                if (item._id === data._id) {
+                    return data;
                 }
                 return item;
             });
 
-        this.dataChange.next({
+        this.dataChange$.next({
             type: 'edit',
-            data: data.row
+            data: data
         });
     }
 
     async itemDelete(id: number) {
-        const { deleteCallback } = this.tableService.getOptions();
-        let result = false;
-
         const index = this.internalData
             .findIndex(item => item._id === id);
 
@@ -163,17 +141,8 @@ export class TableDataService {
             return false;
         }
 
-        if (deleteCallback) {
-            result = await deleteCallback(this.internalData[index]);
-        }
-
-        if (deleteCallback && !result) {
-            return false;
-        }
-
         this.internalData.splice(index, 1);
-
-        this.dataChange.next({
+        this.dataChange$.next({
             data: id,
             type: 'delete'
         });

@@ -16,14 +16,13 @@ import {
 
 import {DEFAULT_TABLE_OPTIONS, PAGINATION} from '../table.constants';
 import {TableDataService} from '../table-data.service';
-import {TableMessagingService} from '../table-messaging.service';
 import {TableService} from '../table.service';
 
 @Component({
     selector: 'ml-table, [ml-table]',
     templateUrl: './table.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [TableDataService, TableMessagingService, TableService]
+    providers: [TableDataService, TableService]
 })
 export class TableComponent implements OnInit, OnChanges, OnDestroy {
     @Input() tableID = 'default';
@@ -32,9 +31,11 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
     @Input() tableLimit: number;
     @Input() numberOfPages: number; // Only if we have external page handler
     @Input() pageNumber: number; // Only if we have external page handler
+
     @Output() add: EventEmitter<any> = new EventEmitter();
-    @Output() update: EventEmitter<any> = new EventEmitter();
+    @Output() edit: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();
+
     @Output() pageChange: EventEmitter<any> = new EventEmitter();
     @Output() numberOfItemsChange: EventEmitter<number> = new EventEmitter();
     @Input() isLoading: Boolean = false;
@@ -55,9 +56,9 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         // On data update
-        this.dataChange$ = this.tableDataService.dataChange
-            .subscribe(data => this[data.type]
-                .emit(data.data));
+        this.dataChange$ = this.tableDataService.dataChange$
+            .subscribe(data =>
+                this[data.type].emit(data.data));
 
         // On new data
         this.getData$ = this.tableDataService
@@ -117,7 +118,7 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
             this.tableDataService.goToPage( this.currentPage + 1);
         } else {
             this.pageChange.emit({
-                direction: PAGINATION.NEXT,
+                direction: PAGINATION.next,
             });
         }
     }
@@ -127,7 +128,7 @@ export class TableComponent implements OnInit, OnChanges, OnDestroy {
             this.tableDataService.goToPage(this.currentPage - 1);
         } else {
             this.pageChange.emit({
-                direction: PAGINATION.PREVIOUS,
+                direction: PAGINATION.previous,
             });
         }
     }

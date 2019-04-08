@@ -32,7 +32,6 @@ export class TableColumnComponent implements OnChanges, OnDestroy {
   }
 
   @Output() dataChange = new EventEmitter<Boolean>();
-  @Output() clicked: EventEmitter<any> = new EventEmitter();
   @Input() isEditing: Boolean = false;
   @Input() isEditable: Boolean = true;
   @Input() columnType: String;
@@ -40,17 +39,12 @@ export class TableColumnComponent implements OnChanges, OnDestroy {
 
   tableColumnTypes = TABLE_COLUMN_TYPES;
 
-  constructor(private compiler: ComponentFactoryResolver) {
-  }
+  constructor(private compiler: ComponentFactoryResolver) {}
 
   ngOnChanges(newData) {
     if (newData.data) {
       this.handleData();
     }
-  }
-
-  onElementClick() {
-    this.clicked.emit(true);
   }
 
   handleData() {
@@ -63,7 +57,7 @@ export class TableColumnComponent implements OnChanges, OnDestroy {
   }
 
   render(component) {
-    if (component && this.columnType === TABLE_COLUMN_TYPES.COMPONENT) {
+    if (component && this.columnType === TABLE_COLUMN_TYPES.component) {
       this.componentRef =
           this.columnComponent.createComponent(
               this.compiler.resolveComponentFactory(component.component));
