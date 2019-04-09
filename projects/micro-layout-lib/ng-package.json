@@ -3,6 +3,7 @@
   "dest": "../../dist/micro-layout-lib",
   "lib": {
     "entryFile": "src/public_api.ts",
-    "styleIncludePaths": ["src/lib/styles"]
+    "styleIncludePaths": ["src/lib/styles"],
+    "cssUrl": "inline"
   }
 }

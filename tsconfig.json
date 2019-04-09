@@ -24,6 +24,12 @@
       ],
       "micro-layout-lib/*": [
         "dist/micro-layout-lib/*"
+      ],
+      "micro-test": [
+        "dist/micro-test"
+      ],
+      "micro-test/*": [
+        "dist/micro-test/*"
       ]
     }
   }

@@ -5,7 +5,7 @@ import { __extends, __awaiter, __generator } from 'tslib';
 import { Ng2OrderPipe, Ng2OrderModule } from 'ng2-order-pipe';
 import { FormControl, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Injectable, Component, EventEmitter, HostListener, Input, Output, NgModule, ChangeDetectionStrategy, Pipe, ComponentFactoryResolver, ViewChild, ViewContainerRef, defineInjectable } from '@angular/core';
+import { Injectable, NgModule, Component, EventEmitter, HostListener, Input, Output, ChangeDetectionStrategy, Pipe, ComponentFactoryResolver, ViewChild, ViewContainerRef, defineInjectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 /**
@@ -2451,6 +2451,6 @@ var MicroLayoutLibModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, ButtonComponent as ɵl, ButtonsModule as ɵk, CardContainerComponent as ɵr, CardFooterComponent as ɵq, CardHeaderComponent as ɵp, CardModule as ɵm, CardService as ɵo, CardComponent as ɵn, DropItemsComponent as ɵh, DropComponent as ɵf, DropService as ɵg, FormModule as ɵd, PartsComponent as ɵj, SlugComponent as ɵi, SwitchComponent as ɵe, LinkModule as ɵs, LinkComponent as ɵt, MessageModule as ɵbe, MessageComponent as ɵbf, ArrayToChunksPipe as ɵa, ProgressModule as ɵu, ProgressComponent as ɵv, TableColumnComponent as ɵx, TableContainerComponent as ɵy, TableDataService as ɵba, TableHeaderComponent as ɵz, TableRowComponent as ɵbc, TableModule as ɵw, TableService as ɵbb, TableComponent as ɵbd, VirtualGridComponent as ɵb, VirtualGridService as ɵc };
+export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, TableModule, ButtonComponent as ɵl, ButtonsModule as ɵk, CardContainerComponent as ɵr, CardFooterComponent as ɵq, CardHeaderComponent as ɵp, CardModule as ɵm, CardService as ɵo, CardComponent as ɵn, DropItemsComponent as ɵh, DropComponent as ɵf, DropService as ɵg, FormModule as ɵd, PartsComponent as ɵj, SlugComponent as ɵi, SwitchComponent as ɵe, LinkModule as ɵs, LinkComponent as ɵt, MessageModule as ɵbd, MessageComponent as ɵbe, ArrayToChunksPipe as ɵa, ProgressModule as ɵu, ProgressComponent as ɵv, TableColumnComponent as ɵw, TableContainerComponent as ɵx, TableDataService as ɵz, TableHeaderComponent as ɵy, TableRowComponent as ɵbb, TableService as ɵba, TableComponent as ɵbc, VirtualGridComponent as ɵb, VirtualGridService as ɵc };
 
 //# sourceMappingURL=micro-layout-lib.js.map

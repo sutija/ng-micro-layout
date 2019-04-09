@@ -2561,6 +2561,7 @@
     exports.MicroLayoutLibService = MicroLayoutLibService;
     exports.MicroLayoutLibComponent = MicroLayoutLibComponent;
     exports.MicroLayoutLibModule = MicroLayoutLibModule;
+    exports.TableModule = TableModule;
     exports.ɵl = ButtonComponent;
     exports.ɵk = ButtonsModule;
     exports.ɵr = CardContainerComponent;
@@ -2578,19 +2579,18 @@
     exports.ɵe = SwitchComponent;
     exports.ɵs = LinkModule;
     exports.ɵt = LinkComponent;
-    exports.ɵbe = MessageModule;
-    exports.ɵbf = MessageComponent;
+    exports.ɵbd = MessageModule;
+    exports.ɵbe = MessageComponent;
     exports.ɵa = ArrayToChunksPipe;
     exports.ɵu = ProgressModule;
     exports.ɵv = ProgressComponent;
-    exports.ɵx = TableColumnComponent;
-    exports.ɵy = TableContainerComponent;
-    exports.ɵba = TableDataService;
-    exports.ɵz = TableHeaderComponent;
-    exports.ɵbc = TableRowComponent;
-    exports.ɵw = TableModule;
-    exports.ɵbb = TableService;
-    exports.ɵbd = TableComponent;
+    exports.ɵw = TableColumnComponent;
+    exports.ɵx = TableContainerComponent;
+    exports.ɵz = TableDataService;
+    exports.ɵy = TableHeaderComponent;
+    exports.ɵbb = TableRowComponent;
+    exports.ɵba = TableService;
+    exports.ɵbc = TableComponent;
     exports.ɵb = VirtualGridComponent;
     exports.ɵc = VirtualGridService;
 

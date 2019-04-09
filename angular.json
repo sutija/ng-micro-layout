@@ -169,6 +169,41 @@
           }
         }
       }
+    },
+    "micro-test": {
+      "root": "projects/micro-test",
+      "sourceRoot": "projects/micro-test/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/micro-test/tsconfig.lib.json",
+            "project": "projects/micro-test/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/micro-test/src/test.ts",
+            "tsConfig": "projects/micro-test/tsconfig.spec.json",
+            "karmaConfig": "projects/micro-test/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/micro-test/tsconfig.lib.json",
+              "projects/micro-test/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "micro-layout"
