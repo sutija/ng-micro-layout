@@ -1,0 +1,32 @@
+@import "vars";
+@import "fonts";
+
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+section,
+main,
+article,
+p,
+span,
+button,
+ul,
+li,
+a,
+input,
+textarea {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+}
+
+body {
+  height: 100%;
+  @include standardFont();
+}

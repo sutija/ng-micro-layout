@@ -1,0 +1,17 @@
+// Button
+$buttonPadding: 10px;
+$buttonGroupPadding: 10px 0 0 0;
+$buttonGroupButtonMargin: 0 5px 0 0;
+
+// Card
+$cardBackgroundColor: #fff;
+$cardPadding:10px;
+
+// Shadows
+@mixin shadow {
+  box-shadow: rgba(0, 0, 0, .1) 0 0 10px;
+}
+
+// Padding
+$inputFieldPadding: 10px;
+$padding: 20px;

@@ -1497,7 +1497,7 @@
                         selector: 'ml-table, [ml-table]',
                         template: "<table\n        [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n>\n    <thead\n            ml-table-header\n            [data]=\"header\"\n            class=\"header\"\n            [isEditable]=\"tableOptions.isEditable\"\n    ></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isDraggable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody\n            ml-table-container\n            class=\"table-container\"\n            *ngIf=\"!tableOptions.isDraggable\"\n            [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n    ></tbody>\n</table>\n<div class=\"table-navigation\">\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onPreviousPage()\"\n            *ngIf=\"currentPage > 0\"\n    >\n        Previous page\n    </button>\n    <span class=\"page-information\">\n        {{ getCurrentPage() }} / {{ numOfPages }}\n    </span>\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onNextPage()\"\n            *ngIf=\"currentPage < numOfPages - 1\"\n    >\n        Next page\n    </button>\n</div>\n<div\n        class=\"number-of-items\"\n        *ngIf=\"tableOptions.canChangeNumberOfItems\"\n>\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n        <option\n                *ngFor=\"let value of tableOptions.numberOfItems\"\n                [value]=\"value\"\n        >{{value}}</option>\n    </select>\n</div>\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
-                        providers: [TableDataService, TableService]
+                        providers: [TableDataService, TableService, ArrayToChunksPipe, ng2OrderPipe.Ng2OrderPipe]
                     }] }
         ];
         /** @nocollapse */
@@ -2303,6 +2303,26 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var PipesModule = /** @class */ (function () {
+        function PipesModule() {
+        }
+        PipesModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [
+                            ArrayToChunksPipe
+                        ],
+                        exports: [
+                            ArrayToChunksPipe
+                        ]
+                    },] }
+        ];
+        return PipesModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var TableModule = /** @class */ (function () {
         function TableModule() {
         }
@@ -2318,7 +2338,8 @@
                         imports: [
                             forms.FormsModule,
                             FormModule,
-                            common.CommonModule
+                            common.CommonModule,
+                            PipesModule
                         ],
                         exports: [
                             TableColumnComponent,
@@ -2516,7 +2537,6 @@
         MicroLayoutLibModule.decorators = [
             { type: i0.NgModule, args: [{
                         declarations: [
-                            ArrayToChunksPipe,
                             MicroLayoutLibComponent,
                             VirtualGridComponent
                         ],
@@ -2542,7 +2562,7 @@
                             MessageModule,
                             VirtualGridComponent
                         ],
-                        providers: [ArrayToChunksPipe, ng2OrderPipe.Ng2OrderPipe]
+                        providers: [ng2OrderPipe.Ng2OrderPipe]
                     },] }
         ];
         return MicroLayoutLibModule;
@@ -2562,37 +2582,41 @@
     exports.MicroLayoutLibComponent = MicroLayoutLibComponent;
     exports.MicroLayoutLibModule = MicroLayoutLibModule;
     exports.TableModule = TableModule;
-    exports.ɵl = ButtonComponent;
-    exports.ɵk = ButtonsModule;
-    exports.ɵr = CardContainerComponent;
-    exports.ɵq = CardFooterComponent;
-    exports.ɵp = CardHeaderComponent;
-    exports.ɵm = CardModule;
-    exports.ɵo = CardService;
-    exports.ɵn = CardComponent;
-    exports.ɵh = DropItemsComponent;
-    exports.ɵf = DropComponent;
-    exports.ɵg = DropService;
-    exports.ɵd = FormModule;
-    exports.ɵj = PartsComponent;
-    exports.ɵi = SlugComponent;
-    exports.ɵe = SwitchComponent;
-    exports.ɵs = LinkModule;
-    exports.ɵt = LinkComponent;
-    exports.ɵbd = MessageModule;
-    exports.ɵbe = MessageComponent;
-    exports.ɵa = ArrayToChunksPipe;
-    exports.ɵu = ProgressModule;
-    exports.ɵv = ProgressComponent;
-    exports.ɵw = TableColumnComponent;
-    exports.ɵx = TableContainerComponent;
-    exports.ɵz = TableDataService;
-    exports.ɵy = TableHeaderComponent;
-    exports.ɵbb = TableRowComponent;
-    exports.ɵba = TableService;
-    exports.ɵbc = TableComponent;
-    exports.ɵb = VirtualGridComponent;
-    exports.ɵc = VirtualGridService;
+    exports.TABLE_COLUMN_TYPES = TABLE_COLUMN_TYPES;
+    exports.DEFAULT_TABLE_OPTIONS = DEFAULT_TABLE_OPTIONS;
+    exports.PAGINATION = PAGINATION;
+    exports.TableService = TableService;
+    exports.TableDataService = TableDataService;
+    exports.ɵk = ButtonComponent;
+    exports.ɵj = ButtonsModule;
+    exports.ɵq = CardContainerComponent;
+    exports.ɵp = CardFooterComponent;
+    exports.ɵo = CardHeaderComponent;
+    exports.ɵl = CardModule;
+    exports.ɵn = CardService;
+    exports.ɵm = CardComponent;
+    exports.ɵg = DropItemsComponent;
+    exports.ɵe = DropComponent;
+    exports.ɵf = DropService;
+    exports.ɵc = FormModule;
+    exports.ɵi = PartsComponent;
+    exports.ɵh = SlugComponent;
+    exports.ɵd = SwitchComponent;
+    exports.ɵr = LinkModule;
+    exports.ɵs = LinkComponent;
+    exports.ɵbc = MessageModule;
+    exports.ɵbd = MessageComponent;
+    exports.ɵy = ArrayToChunksPipe;
+    exports.ɵbb = PipesModule;
+    exports.ɵt = ProgressModule;
+    exports.ɵu = ProgressComponent;
+    exports.ɵv = TableColumnComponent;
+    exports.ɵw = TableContainerComponent;
+    exports.ɵx = TableHeaderComponent;
+    exports.ɵz = TableRowComponent;
+    exports.ɵba = TableComponent;
+    exports.ɵa = VirtualGridComponent;
+    exports.ɵb = VirtualGridService;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

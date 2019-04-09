@@ -7,6 +7,7 @@ import {TableComponent} from './table/table.component';
 import {FormsModule} from '@angular/forms';
 import {FormModule} from '../form/form.module';
 import {TableHeaderComponent} from './table-header/table-header.component';
+import {PipesModule} from '../pipes/pipes.module';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import {TableHeaderComponent} from './table-header/table-header.component';
     imports: [
         FormsModule,
         FormModule,
-        CommonModule
+        CommonModule,
+        PipesModule
     ],
     exports: [
         TableColumnComponent,

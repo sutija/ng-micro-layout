@@ -1163,7 +1163,7 @@ TableComponent.decorators = [
                 selector: 'ml-table, [ml-table]',
                 template: "<table\n        [ngClass]=\"{\n        'table-isLoading': isLoading,\n        'table': true\n    }\"\n>\n    <thead\n            ml-table-header\n            [data]=\"header\"\n            class=\"header\"\n            [isEditable]=\"tableOptions.isEditable\"\n    ></thead>\n    <tbody ml-table-container\n           *ngIf=\"tableOptions.isDraggable\"\n           [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n           ngClass=\"table-container\"\n    ></tbody>\n    <tbody\n            ml-table-container\n            class=\"table-container\"\n            *ngIf=\"!tableOptions.isDraggable\"\n            [isEditable]=\"tableOptions.isEditable\"\n           [data]=\"container\"\n    ></tbody>\n</table>\n<div class=\"table-navigation\">\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onPreviousPage()\"\n            *ngIf=\"currentPage > 0\"\n    >\n        Previous page\n    </button>\n    <span class=\"page-information\">\n        {{ getCurrentPage() }} / {{ numOfPages }}\n    </span>\n    <button\n            [disabled]=\"isLoading\"\n            class=\"table-button\"\n            (click)=\"onNextPage()\"\n            *ngIf=\"currentPage < numOfPages - 1\"\n    >\n        Next page\n    </button>\n</div>\n<div\n        class=\"number-of-items\"\n        *ngIf=\"tableOptions.canChangeNumberOfItems\"\n>\n    <label># of items</label>\n    <select (change)=\"onChangeNumberOfItems($event.target.value)\">\n        <option\n                *ngFor=\"let value of tableOptions.numberOfItems\"\n                [value]=\"value\"\n        >{{value}}</option>\n    </select>\n</div>\n",
                 changeDetection: ChangeDetectionStrategy.OnPush,
-                providers: [TableDataService, TableService]
+                providers: [TableDataService, TableService, ArrayToChunksPipe, Ng2OrderPipe]
             }] }
 ];
 /** @nocollapse */
@@ -1812,6 +1812,23 @@ TableHeaderComponent.propDecorators = {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class PipesModule {
+}
+PipesModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [
+                    ArrayToChunksPipe
+                ],
+                exports: [
+                    ArrayToChunksPipe
+                ]
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class TableModule {
 }
 TableModule.decorators = [
@@ -1826,7 +1843,8 @@ TableModule.decorators = [
                 imports: [
                     FormsModule,
                     FormModule,
-                    CommonModule
+                    CommonModule,
+                    PipesModule
                 ],
                 exports: [
                     TableColumnComponent,
@@ -1997,7 +2015,6 @@ class MicroLayoutLibModule {
 MicroLayoutLibModule.decorators = [
     { type: NgModule, args: [{
                 declarations: [
-                    ArrayToChunksPipe,
                     MicroLayoutLibComponent,
                     VirtualGridComponent
                 ],
@@ -2023,7 +2040,7 @@ MicroLayoutLibModule.decorators = [
                     MessageModule,
                     VirtualGridComponent
                 ],
-                providers: [ArrayToChunksPipe, Ng2OrderPipe]
+                providers: [Ng2OrderPipe]
             },] }
 ];
 
@@ -2037,6 +2054,11 @@ MicroLayoutLibModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, TableModule, ButtonComponent as ɵl, ButtonsModule as ɵk, CardContainerComponent as ɵr, CardFooterComponent as ɵq, CardHeaderComponent as ɵp, CardModule as ɵm, CardService as ɵo, CardComponent as ɵn, DropItemsComponent as ɵh, DropComponent as ɵf, DropService as ɵg, FormModule as ɵd, PartsComponent as ɵj, SlugComponent as ɵi, SwitchComponent as ɵe, LinkModule as ɵs, LinkComponent as ɵt, MessageModule as ɵbd, MessageComponent as ɵbe, ArrayToChunksPipe as ɵa, ProgressModule as ɵu, ProgressComponent as ɵv, TableColumnComponent as ɵw, TableContainerComponent as ɵx, TableDataService as ɵz, TableHeaderComponent as ɵy, TableRowComponent as ɵbb, TableService as ɵba, TableComponent as ɵbc, VirtualGridComponent as ɵb, VirtualGridService as ɵc };
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { MicroLayoutLibService, MicroLayoutLibComponent, MicroLayoutLibModule, TableModule, TABLE_COLUMN_TYPES, DEFAULT_TABLE_OPTIONS, PAGINATION, TableService, TableDataService, ButtonComponent as ɵk, ButtonsModule as ɵj, CardContainerComponent as ɵq, CardFooterComponent as ɵp, CardHeaderComponent as ɵo, CardModule as ɵl, CardService as ɵn, CardComponent as ɵm, DropItemsComponent as ɵg, DropComponent as ɵe, DropService as ɵf, FormModule as ɵc, PartsComponent as ɵi, SlugComponent as ɵh, SwitchComponent as ɵd, LinkModule as ɵr, LinkComponent as ɵs, MessageModule as ɵbc, MessageComponent as ɵbd, ArrayToChunksPipe as ɵy, PipesModule as ɵbb, ProgressModule as ɵt, ProgressComponent as ɵu, TableColumnComponent as ɵv, TableContainerComponent as ɵw, TableHeaderComponent as ɵx, TableRowComponent as ɵz, TableComponent as ɵba, VirtualGridComponent as ɵa, VirtualGridService as ɵb };
 
 //# sourceMappingURL=micro-layout-lib.js.map

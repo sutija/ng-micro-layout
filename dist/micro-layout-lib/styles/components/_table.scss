@@ -1,0 +1,95 @@
+@import "../colors";
+@import "../vars";
+
+ml-table {
+  .wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .table {
+    background-color: $colorLight;
+    border-collapse: collapse;
+    transition: opacity ease 0.6s;
+    width: 100%;
+
+    &-isLoading {
+      opacity: .2;
+    }
+  }
+
+  .header {
+    background-color: $colorDefaultLighter;
+  }
+
+  .table-navigation {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+
+    .page-information {
+
+    }
+
+    .table-button {
+      padding: 5px;
+    }
+  }
+
+  .number-of-items {
+    padding-top: 15px;
+    text-align: right;
+
+    label {
+      margin-right: 10px;
+    }
+  }
+}
+
+[ml-table-column] {
+  .column{
+    padding: 5px;
+  }
+
+  .table-form-element {
+      input {
+        padding: $inputFieldPadding;
+      }
+  }
+}
+
+[ml-table-container] {
+  .row {
+    transition: background-color ease 0.2s;
+    &:hover {
+      background-color: $colorDefaultLighter;
+    }
+  }
+
+  .table-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-right: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+[ml-table-header] {
+  .column {
+    font-weight: bold;
+    padding: 5px;
+    text-align: left;
+
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0
+    }
+  }
+}

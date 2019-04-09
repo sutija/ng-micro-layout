@@ -17,12 +17,14 @@ import {
 import {DEFAULT_TABLE_OPTIONS, PAGINATION} from '../table.constants';
 import {TableDataService} from '../table-data.service';
 import {TableService} from '../table.service';
+import {ArrayToChunksPipe} from '../../pipes/array.pipe';
+import {Ng2OrderPipe} from 'ng2-order-pipe';
 
 @Component({
     selector: 'ml-table, [ml-table]',
     templateUrl: './table.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [TableDataService, TableService]
+    providers: [TableDataService, TableService, ArrayToChunksPipe, Ng2OrderPipe]
 })
 export class TableComponent implements OnInit, OnChanges, OnDestroy {
     @Input() tableID = 'default';

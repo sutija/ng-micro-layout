@@ -1,0 +1,32 @@
+ml-parts {
+  .parts {
+    padding: 20px 0;
+  
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  
+    li {
+      background-color: #dedede;
+      list-style: none;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+  
+    span {
+      padding: 0 20px;
+    }
+  }
+  .parts-input {
+    display: flex;
+  
+    input {
+      flex-grow: 1;
+    }
+    ml-button {
+      flex-shrink: 1;
+    }
+  }  
+}

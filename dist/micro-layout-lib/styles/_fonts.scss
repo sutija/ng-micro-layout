@@ -1,0 +1,8 @@
+@mixin standardFont(){
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 200;
+}
+@mixin headlineFont(){
+  font-size: 1.8rem;
+}
